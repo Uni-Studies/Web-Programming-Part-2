@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "TZdpbQ1k9P6empmW8njm5w8f/XnTC14si3Ut4stnpeM=",
+  "Source": "MvcApiSample",
+  "BasePath": "_content/MvcApiSample",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "MvcApiSample\\wwwroot",
+      "Source": "MvcApiSample",
+      "ContentRoot": "D:\\Aneliya\\Uni\\Web Programming 2\\Projects\\rest-api\\MvcApiSample\\MvcApiSample\\wwwroot\\",
+      "BasePath": "_content/MvcApiSample",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

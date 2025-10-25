@@ -1,0 +1,11 @@
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\bin\Debug\net9.0\Common.deps.json
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\bin\Debug\net9.0\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\bin\Debug\net9.0\Common.pdb
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.GeneratedMSBuildEditorConfig.editorconfig
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.AssemblyInfoInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.AssemblyInfo.cs
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.csproj.CoreCompileInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\refint\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.pdb
+D:\Aneliya\Uni\Web Programming 2\Projects\ProgressTracker\Common\obj\Debug\net9.0\ref\Common.dll
