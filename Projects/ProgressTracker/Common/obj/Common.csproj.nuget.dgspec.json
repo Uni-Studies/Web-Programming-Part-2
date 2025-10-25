@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Aneliya\\Uni\\Web Programming 2\\Projects\\ProgressTracker\\Common\\Common.csproj": {}
+    "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker\\Common\\Common.csproj": {}
   },
   "projects": {
-    "D:\\Aneliya\\Uni\\Web Programming 2\\Projects\\ProgressTracker\\Common\\Common.csproj": {
+    "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Aneliya\\Uni\\Web Programming 2\\Projects\\ProgressTracker\\Common\\Common.csproj",
+        "projectUniqueName": "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "D:\\Aneliya\\Uni\\Web Programming 2\\Projects\\ProgressTracker\\Common\\Common.csproj",
+        "projectPath": "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\aneli\\.nuget\\packages\\",
-        "outputPath": "D:\\Aneliya\\Uni\\Web Programming 2\\Projects\\ProgressTracker\\Common\\obj\\",
+        "outputPath": "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\aneli\\AppData\\Roaming\\NuGet\\NuGet.Config",
