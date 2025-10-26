@@ -10,6 +10,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize] // if more authentication methods. then specify [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")] // attribute of the framework which works with the configured frameworks; tells that this controller needs authentication with bearer tokens
     public class UsersController : ControllerBase
     {
         [HttpGet]

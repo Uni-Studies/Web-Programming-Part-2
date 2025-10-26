@@ -14,14 +14,22 @@ public class UsersServices
     {
         Items = new List<User>()
         {
-            // new User()
-            // {
-            //     Id = 1,
-            //     Username = "admin",
-            //     Password = "admin",
-            //     FirstName = "System",
-            //     LastName = "Administrator"
-            // }
+            new User()
+            {
+                Id = 1,
+                Username = "alyavova",
+                Password = "aneliyapass",
+                FirstName = "Aneliya",
+                LastName = "Lyavova"
+            },
+            new User()
+            {
+                Id = 2,
+                Username = "john_doe",
+                Password = "jdpassword",
+                FirstName = "John",
+                LastName = "Doe"
+            }
             // property initializers
         };
     }

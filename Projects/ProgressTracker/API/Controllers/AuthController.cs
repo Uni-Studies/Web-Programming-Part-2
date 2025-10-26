@@ -19,7 +19,9 @@ namespace API.Controllers
                                         .FirstOrDefault(u =>
                                             u.Username == username &&
                                             u.Password == password);
-
+            if (loggedUser == null)
+                return Unauthorized();
+                
             TokenServices tokenService = new TokenServices();
             string token = tokenService.CreateToken(loggedUser);
 
