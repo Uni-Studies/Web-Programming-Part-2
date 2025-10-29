@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using API.Infrastructure.RequestDTOs.Users;
 using Common.Entities;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,16 +17,33 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            //string loggedUserId = this.User.FindFirstValue("loggedUserId");   
+            //string loggedUserId = this.User.FindFirstValue("loggedUserId");
             UsersServices service = new UsersServices();
             return Ok(service.GetAll());
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult Get([FromRoute] int id)
+        {
+            //string loggedUserId = this.User.FindFirstValue("loggedUserId");   
+            UsersServices service = new UsersServices();
+            return Ok(service.GetById(id));
+        }
+
         [HttpPost]
-        public IActionResult Post([FromBody] User model)
+        public IActionResult Post([FromBody] UserRequest model)
         {
             UsersServices service = new UsersServices();
-            service.Save(model);
+            User user = new User
+            {
+                Username = model.Username,
+                Password = model.Password,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+
+            service.Save(user);
             
             return Ok(model);
         }
@@ -44,7 +62,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Put([FromRoute] int id, [FromBody] User model)
+        public IActionResult Put([FromRoute] int id, [FromBody] UserRequest model)
         {
             UsersServices service = new UsersServices();
             User forUpdate = service.GetById(id);

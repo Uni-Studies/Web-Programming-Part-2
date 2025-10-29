@@ -21,14 +21,6 @@ public class UsersServices
                 Password = "aneliyapass",
                 FirstName = "Aneliya",
                 LastName = "Lyavova"
-            },
-            new User()
-            {
-                Id = 2,
-                Username = "john_doe",
-                Password = "jdpassword",
-                FirstName = "John",
-                LastName = "Doe"
             }
             // property initializers
         };

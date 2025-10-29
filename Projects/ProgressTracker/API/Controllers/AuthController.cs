@@ -1,4 +1,5 @@
 using System.Linq;
+using API.Infrastructure.RequestDTOs.Auth;
 using API.Services;
 using Common.Entities;
 using Common.Services;
@@ -12,13 +13,13 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         [HttpPost]
-        public IActionResult CreateToken([FromForm]string username, [FromForm]string password)
+        public IActionResult CreateToken([FromForm] AuthTokenRequest model) //[FromForm]string username, [FromForm]string password
         {
             UsersServices service = new UsersServices();
             User loggedUser = service.GetAll()
                                         .FirstOrDefault(u =>
-                                            u.Username == username &&
-                                            u.Password == password);
+                                            u.Username == model.Username &&
+                                            u.Password == model.Password);
             if (loggedUser == null)
                 return Unauthorized();
                 
