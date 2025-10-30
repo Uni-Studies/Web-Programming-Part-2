@@ -5,7 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers(); // dependency injection
+builder.Services.AddControllers() // dependency injection
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            }); // it will try to complete the action with invalid data
 
 // this is a check for the token
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) //puts this in the brackets instead doing it in the controlllers; controllers will want it for authentication
