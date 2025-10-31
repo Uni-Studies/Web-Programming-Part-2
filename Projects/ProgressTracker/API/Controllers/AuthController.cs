@@ -17,12 +17,7 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult CreateToken([FromForm] AuthTokenRequest model) //[FromForm]string username, [FromForm]string password
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(
-                    ServiceResultExtensions<List<Error>>.Failure(null, ModelState)
-                );
-            }
+
             // if (!ModelState.IsValid)
             // {
             //     var errors = new List<Error>();
@@ -40,6 +35,13 @@ namespace API.Controllers
             //         ServiceResult<List<Error>>.Failure(errors, null)
             //     );
             // }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(
+                    ServiceResultExtensions<List<Error>>.Failure(null, ModelState)
+                );
+            }
             
             UsersServices service = new UsersServices();
             User loggedUser = service.GetAll()

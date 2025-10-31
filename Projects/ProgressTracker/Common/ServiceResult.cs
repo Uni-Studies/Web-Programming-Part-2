@@ -15,7 +15,7 @@ namespace Common;
 public class ServiceResult<T>
 where T : class, new() // T must be class so that it can be JSON serilialized
 {
-     public bool IsSuccess { get; set; }
+    public bool IsSuccess { get; set; }
     public T Data { get; set; }
     public List<Error> Errors { get; set; }
     public static ServiceResult<T> Success(T data)
