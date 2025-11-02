@@ -1,9 +1,13 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using API.Infrastructure.RequestDTOs.Users;
+using API.Services;
+using Common;
 using Common.Entities;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -18,18 +22,39 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            ModelState.AddModelError("Global", "Empty users list");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");
             UsersServices service = new UsersServices();
-            return Ok(service.GetAll());
+            var allUsers = service.GetAll();
+            if(allUsers.Count == 0)
+            {
+               return NotFound(ServiceResultExtensions<List<Error>>.Failure(null, ModelState)); 
+            }
+            return Ok(allUsers);
         }
 
         [HttpGet]
         [Route("{id}")]
         public IActionResult Get([FromRoute] int id)
         {
+            ModelState.AddModelError("Global", "User not found");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");   
             UsersServices service = new UsersServices();
-            return Ok(service.GetById(id));
+            var user = service.GetById(id);
+            if (user == null)
+            {
+                return NotFound(ServiceResultExtensions<List<Error>>.Failure(
+                 new List<Error>() {
+                    new Error()
+                    {
+                        Key = "Global",
+                        Messages = new List<string>() { "User not found" }
+                    }
+
+                 },
+                 ModelState));
+            }
+            return Ok(user);
         }
 
         [HttpPost]
