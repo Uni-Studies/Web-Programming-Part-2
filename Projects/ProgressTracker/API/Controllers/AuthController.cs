@@ -44,7 +44,7 @@ namespace API.Controllers
             }
             
             UsersServices service = new UsersServices();
-            User loggedUser = service.GetAll()
+            User loggedUser = service.GetAll().Data
                                         .FirstOrDefault(u =>
                                             u.Username == model.Username &&
                                             u.Password == model.Password);

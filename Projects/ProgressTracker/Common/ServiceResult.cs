@@ -9,9 +9,6 @@ namespace Common;
         public List<string> Messages { get; set; }
     } 
 
-   
-
-
 public class ServiceResult<T>
 where T : class, new() // T must be class so that it can be JSON serilialized
 {

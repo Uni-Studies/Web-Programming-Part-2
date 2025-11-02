@@ -22,30 +22,38 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            //ModelState.AddModelError("Global", "Empty users list");
+            ModelState.AddModelError("Global", "Empty users list");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");
             UsersServices service = new UsersServices();
-            var allUsersResult = service.GetAll();
-            if(allUsersResult.IsSuccess == false)
+            var allUsers = service.GetAll();
+            if(allUsers.Count == 0)
             {
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(null, ModelState)); 
+               return NotFound(ServiceResultExtensions<List<Error>>.Failure(null, ModelState)); 
             }
-            return Ok(allUsersResult);
+            return Ok(allUsers);
         }
 
         [HttpGet]
         [Route("{id}")]
         public IActionResult Get([FromRoute] int id)
         {
-            ModelState.AddModelError("Global", "User not found");
+            //ModelState.AddModelError("Global", "User not found");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");   
             UsersServices service = new UsersServices();
-            var userResult = service.GetById(id);
-            if (userResult.IsSuccess == false)
+            var user = service.GetById(id);
+            if (user == null)
             {
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(userResult.Errors, ModelState));
+                return NotFound(ServiceResultExtensions<List<Error>>.Failure(
+                 new List<Error>() {
+                    new Error()
+                    {
+                        Key = "Global",
+                        Messages = new List<string>() { "User not found" }
+                    }
+                 },
+                 ModelState));
             }
-            return Ok(userResult);
+            return Ok(user);
         }
 
         [HttpPost]
@@ -79,14 +87,22 @@ namespace API.Controllers
         [Route("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            ModelState.AddModelError("Global", "User not found");
+            //ModelState.AddModelError("Global", "User not found");
             UsersServices service = new UsersServices();
-            var forDeleteResult = service.GetById(id);
-            if (forDeleteResult.IsSuccess == false)
+            User forDelete = service.GetById(id);
+            if (forDelete == null)
                 // throw new System.Exception("User not found");
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(forDeleteResult.Errors, ModelState));
+                return NotFound(ServiceResultExtensions<List<Error>>.Failure(
+                 new List<Error>() {
+                    new Error()
+                    {
+                        Key = "Global",
+                        Messages = new List<string>() { "User not found" }
+                    }
+                 },
+                 ModelState));
 
-            var result = service.Delete(forDeleteResult.Data);
+            var result = service.Delete(forDelete);
 
             if(result.IsSuccess == false)
             {
@@ -100,30 +116,26 @@ namespace API.Controllers
         public IActionResult Put([FromRoute] int id, [FromBody] UserRequest model)
         {
             UsersServices service = new UsersServices();
-            ModelState.AddModelError("Global", "User not found");
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(null, ModelState));
-            }
-            
-            var forUpdateResult = service.GetById(id);
-            if (forUpdateResult.IsSuccess == false)
+            User forUpdate = service.GetById(id);
+            if (forUpdate == null)
                 //throw new System.Exception("User not found");
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(forUpdateResult.Errors, ModelState));
+                return NotFound(ServiceResultExtensions<List<Error>>.Failure(
+                 new List<Error>() {
+                    new Error()
+                    {
+                        Key = "Global",
+                        Messages = new List<string>() { "User not found" }
+                    }
+                 },
+                 ModelState));
 
-            User forUpdate = forUpdateResult.Data;  
             forUpdate.Username = model.Username;
             forUpdate.Password = model.Password;
             forUpdate.FirstName = model.FirstName;
             forUpdate.LastName = model.LastName;
+            service.Save(forUpdate);
             
-            var result = service.Save(forUpdate);
-            if(result.IsSuccess == false)
-            {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(result.Errors, ModelState));
-            }
-            // return Ok(model);
-            return Ok(result);
+            return Ok(forUpdate);
         }
     }
 }
