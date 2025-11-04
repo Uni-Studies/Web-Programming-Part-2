@@ -1,4 +1,7 @@
 using System.Text;
+using API.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,11 +9,15 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers() // dependency injection
-            .ConfigureApiBehaviorOptions(options =>
-            {
-                options.SuppressModelStateInvalidFilter = false;
-            }); // it will try to complete the action with invalid data
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = false;
+                }); // it will try to complete the action with invalid data
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
 
+// ✅ Register validators from your assembly
+builder.Services.AddValidatorsFromAssemblyContaining<UserRequestValidator>();
 // this is a check for the token
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) //puts this in the brackets instead doing it in the controlllers; controllers will want it for authentication
     .AddJwtBearer(options =>

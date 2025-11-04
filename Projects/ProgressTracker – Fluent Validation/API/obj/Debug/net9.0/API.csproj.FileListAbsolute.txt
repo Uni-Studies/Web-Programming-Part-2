@@ -73,3 +73,44 @@ D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker
 D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker\API\obj\Debug\net9.0\API.pdb
 D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker\API\obj\Debug\net9.0\API.genruntimeconfig.cache
 D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker\API\obj\Debug\net9.0\ref\API.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\appsettings.Development.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\API.staticwebassets.endpoints.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\API.exe
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\API.deps.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\API.runtimeconfig.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\API.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\API.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\FluentValidation.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\FluentValidation.AspNetCore.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\FluentValidation.DependencyInjectionExtensions.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Microsoft.OpenApi.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\bin\Debug\net9.0\Common.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.csproj.AssemblyReference.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.GeneratedMSBuildEditorConfig.editorconfig
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.AssemblyInfoInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.AssemblyInfo.cs
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.csproj.CoreCompileInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.MvcApplicationPartsAssemblyInfo.cs
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.MvcApplicationPartsAssemblyInfo.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.sourcelink.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\scopedcss\bundle\API.styles.css
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\staticwebassets.build.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\staticwebassets.build.json.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\staticwebassets.development.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.csproj.Up2Date
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\refint\API.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\API.genruntimeconfig.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\API\obj\Debug\net9.0\ref\API.dll

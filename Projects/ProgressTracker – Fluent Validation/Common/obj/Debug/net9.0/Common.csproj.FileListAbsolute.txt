@@ -21,3 +21,16 @@ D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker
 D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker\Common\obj\Debug\net9.0\refint\Common.dll
 D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker\Common\obj\Debug\net9.0\Common.pdb
 D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker\Common\obj\Debug\net9.0\ref\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\bin\Debug\net9.0\Common.deps.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\bin\Debug\net9.0\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\bin\Debug\net9.0\Common.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.csproj.AssemblyReference.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.GeneratedMSBuildEditorConfig.editorconfig
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.AssemblyInfoInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.AssemblyInfo.cs
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.csproj.CoreCompileInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.sourcelink.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\refint\Common.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\Common.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\ProgressTracker – Fluent Validation\Common\obj\Debug\net9.0\ref\Common.dll
