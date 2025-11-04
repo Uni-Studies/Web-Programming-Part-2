@@ -26,9 +26,9 @@ namespace API.Controllers
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");
             UsersServices service = new UsersServices();
             var allUsersResult = service.GetAll();
-            if(allUsersResult.IsSuccess == false)
+            if(allUsersResult.Count == 0)
             {
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(null, ModelState)); 
+                return NotFound(ModelState); 
             }
             return Ok(allUsersResult);
         }
@@ -41,9 +41,9 @@ namespace API.Controllers
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");   
             UsersServices service = new UsersServices();
             var userResult = service.GetById(id);
-            if (userResult.IsSuccess == false)
+            if (userResult is null)
             {
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(userResult.Errors, ModelState));
+                return NotFound(ModelState);
             }
             return Ok(userResult);
         }
@@ -62,17 +62,13 @@ namespace API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(null, ModelState));
+                return BadRequest(ModelState);
             }
 
-            var result = service.Save(user);
+            service.Save(user);
             
-            if(result.IsSuccess == false)
-            {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(result.Errors, ModelState));
-            }
             // return Ok(model);
-            return Ok(result);
+            return Ok(model);
         }
 
         [HttpDelete] // for single parameter
@@ -82,17 +78,13 @@ namespace API.Controllers
             ModelState.AddModelError("Global", "User not found");
             UsersServices service = new UsersServices();
             var forDeleteResult = service.GetById(id);
-            if (forDeleteResult.IsSuccess == false)
+            if (forDeleteResult is null)
                 // throw new System.Exception("User not found");
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(forDeleteResult.Errors, ModelState));
+                return NotFound(ModelState);
 
-            var result = service.Delete(forDeleteResult.Data);
+            service.Delete(forDeleteResult);
 
-            if(result.IsSuccess == false)
-            {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(result.Errors, ModelState));
-            }
-            return Ok(result);
+            return Ok(forDeleteResult);
         }
 
         [HttpPut]
@@ -103,27 +95,23 @@ namespace API.Controllers
             ModelState.AddModelError("Global", "User not found");
             if (!ModelState.IsValid)
             {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(null, ModelState));
+                return BadRequest(ModelState);
             }
             
             var forUpdateResult = service.GetById(id);
-            if (forUpdateResult.IsSuccess == false)
+            if (forUpdateResult is null)
                 //throw new System.Exception("User not found");
-                return NotFound(ServiceResultExtensions<List<Error>>.Failure(forUpdateResult.Errors, ModelState));
+                return NotFound(ModelState);
 
-            User forUpdate = forUpdateResult.Data;  
+            User forUpdate = forUpdateResult;  
             forUpdate.Username = model.Username;
             forUpdate.Password = model.Password;
             forUpdate.FirstName = model.FirstName;
             forUpdate.LastName = model.LastName;
             
-            var result = service.Save(forUpdate);
-            if(result.IsSuccess == false)
-            {
-                return BadRequest(ServiceResultExtensions<List<Error>>.Failure(result.Errors, ModelState));
-            }
+            service.Save(forUpdate);
             // return Ok(model);
-            return Ok(result);
+            return Ok(model);
         }
     }
 }

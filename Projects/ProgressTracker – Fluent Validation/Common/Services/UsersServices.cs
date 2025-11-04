@@ -26,41 +26,27 @@ public class UsersServices
         };
     }
 
-    public ServiceResult<List<User>> GetAll()
+    public List<User> GetAll()
     {
-        if (Items == null)
+        if (Items.Count == 0)
         {
-            return ServiceResult<List<User>>.Failure(null, new List<Error>()
-            {
-                new Error()
-                {
-                    Key = "Global",
-                    Messages = new List<string>() { "No users found" }
-                }
-            });
+            throw new Exception("No users found");
         }
-            
-        return ServiceResult<List<User>>.Success(Items);
+
+        return Items;
     }
 
-    public ServiceResult<User> GetById(int id)
+    public User GetById(int id)
     {
         var item = Items.FirstOrDefault(x => x.Id == id);
         if (item == null)
         {
-            return ServiceResult<User>.Failure(new User {Id = id}, new List<Error>()
-            {
-                new Error()
-                {
-                    Key = "Global",
-                    Messages = new List<string>() { "User not found" }
-                }
-            });
+            throw new Exception("Item not found");
         }
-        return ServiceResult<User>.Success(item);
+        return item;
     }
 
-    public ServiceResult<User> Save(User item)
+    public void Save(User item)
     {
         if (item.Id > 0)
         {
@@ -86,37 +72,14 @@ public class UsersServices
                                     : Items.Max(x => x.Id) + 1;
             */
         }
-        if (!Items.Contains(item))
-            return ServiceResult<User>.Failure(item, new List<Error>()
-            {
-                new Error()
-                {
-                    Key = "Global",
-                    Messages = new List<string>() { "Operation failed" }
-                }
-            });
-             
-        return ServiceResult<User>.Success(item);   
     }
     
-    public ServiceResult<User> Delete(User item)
+    public void Delete(User item)
     {
         // User forDelete = Items.FirstOrDefault(x => x.Id == item.Id);
         // if (forDelete == null)
         //     throw new Exception("Item not found");
         // Items.Remove(forDelete);
         Items.Remove(item);
-        if (Items.Contains(item))
-        {
-            return ServiceResult<User>.Failure(item, new List<Error>()
-            {
-                new Error()
-                {
-                    Key = "Global",
-                    Messages = new List<string>() { "Operation Delete failed" }
-                }
-            });
-        }
-        return ServiceResult<User>.Success(item);
     }
 }
