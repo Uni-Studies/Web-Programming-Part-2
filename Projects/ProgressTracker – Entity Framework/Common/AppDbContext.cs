@@ -11,11 +11,12 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
     //Microsoft.EntityFrameworkCore.Design
 
     public DbSet<User> Users { get; set; } // represents the Users table in the database
-
+    public DbSet<Project> Projects { get; set; } 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Configure the database connection string
         optionsBuilder
+            .UseLazyLoadingProxies() // enables lazy loading
             .UseSqlServer(@"
                 Server=(localdb)\MSSQLLocalDB;
                 Database=PTDB;
@@ -36,6 +37,9 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .HasKey(u => u.Id); 
+
         // Configure entity properties and relationships if needed
         modelBuilder.Entity<User>()
                          .HasData(new User
@@ -47,5 +51,16 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
                              Password = "admin"
                          });
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Project>()
+            .HasKey(p => p.Id);
+
+        modelBuilder.Entity<Project>()
+            .HasOne<User>(p => p.Owner) // each project has one owner
+            .WithMany(/*u => u.Projects*/)    // each user can own multiple projects
+            .HasForeignKey(p => p.OwnerId) // foreign key in Projects table
+            .OnDelete(DeleteBehavior.Restrict); // when a User is deleted, their Projects are also deleted
+              // otherwise not consistent behaviour of the database
+              // do not do cascade behaviour in delete    
     }
 }

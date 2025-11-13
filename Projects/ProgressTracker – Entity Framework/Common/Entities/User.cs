@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Common.Entities;
 
@@ -11,5 +12,7 @@ public class User : BaseEntity
     
     public string FirstName { get; set; }
     public string LastName { get; set; }
+
+    //public virtual List<Project> Projects { get; set; } // navigation property - not needed 
 }
 

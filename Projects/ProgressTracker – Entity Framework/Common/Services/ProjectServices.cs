@@ -1,37 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Common.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Services;
 
- public class UsersServices //: BaseService<User>
+public class ProjectServices
 {
     private DbContext DbContext { get; set; }
-    private DbSet<User> Items { get; set; }
+    private DbSet<Project> Items { get; set; }
 
-    public UsersServices()
+    public ProjectServices()
     {
         DbContext = new AppDbContext();
-        Items = DbContext.Set<User>();
+        Items = DbContext.Set<Project>();
     }
-    public List<User> GetAll()
+    public List<Project> GetAll()
     {
         AppDbContext context = new AppDbContext();
         //return Items.ToList();
-        return context.Users.ToList();
+        return context.Projects.ToList();
     }
 
-    public User GetById(int id)
+    public Project GetById(int id)
     {
         //AppDbContext context = new AppDbContext();
         var item = Items.FirstOrDefault(x => x.Id == id);
         return item;
     }
 
-    public void Save(User item)
+    public void Save(Project item)
     {
         //AppDbContext context = new AppDbContext();
         if (item.Id > 0)
@@ -45,11 +44,11 @@ namespace Common.Services;
         DbContext.SaveChanges();
     }
     
-    public void Delete(User item)
+    public void Delete(Project item)
     {
         //AppDbContext context = new AppDbContext();
 
-        User forDelete = Items.FirstOrDefault(x => x.Id == item.Id);
+        Project forDelete = Items.FirstOrDefault(x => x.Id == item.Id);
         if (forDelete == null)
             throw new Exception("Item not found");
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Security.Claims;
+using API.Infrastructure.RequestDTOs.Projects;
 using API.Infrastructure.RequestDTOs.Users;
 using API.Services;
 using Common;
@@ -7,6 +8,7 @@ using Common.Entities;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,8 +59,22 @@ namespace API.Controllers
                 Username = model.Username,
                 Password = model.Password,
                 FirstName = model.FirstName,
-                LastName = model.LastName
+                LastName = model.LastName,
+                //Projects = new List<Project>()
             };
+
+            // model.Projects = model.Projects ?? new List<ProjectRequest>();
+
+            // foreach (var pr in model.Projects)
+            // {
+            //     user.Projects.Add(
+            //         new Project
+            //         {
+            //             Title = pr.Title,
+            //             Description = pr.Description
+            //         }
+            //     );
+            // }
 
             if (!ModelState.IsValid)
             {

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using API.Infrastructure.RequestDTOs.Projects;
 
 namespace API.Infrastructure.RequestDTOs.Users;
 
@@ -18,4 +20,6 @@ public class UserRequest
 
     //[Required(ErrorMessage = "This field is required.")]
     public string LastName { get; set; }
+
+    public List<ProjectRequest> Projects { get; set; } 
 }
