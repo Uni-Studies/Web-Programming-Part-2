@@ -1,6 +1,10 @@
+using System;
+using System.Linq.Expressions;
+using System.Security.Claims;
 using API.Infrastructure.RequestDTOs.Projects;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,25 +14,42 @@ namespace API.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-          [HttpGet]
-        public IActionResult Get()
+        // 1. In Projects folder create ProjectsGetRequest, ProjectsGetFilterRequest
+        // 2. In the ProjectController implement GET with filtering, paging 
+        [HttpGet]
+        public IActionResult Get([FromBody] ProjectsGetRequest model)
         {
             //ModelState.AddModelError("Global", "Empty users list");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");
+            
+            model.Pager = model.Pager ?? new Infrastructure.RequestDTOs.Shared.PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0 ? 1 : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0 ? 10 : model.Pager.PageSize;
+            model.OrderBy ??= "Id";
+            model.OrderBy = typeof(Project).GetProperty(model.OrderBy) != null ? model.OrderBy : "id";
+            model.Filter ??= new ProjectsGetFilterRequest();
+            
             ProjectServices service = new ProjectServices();
-            var allUsersResult = service.GetAll();
-            if(allUsersResult.Count == 0)
-            {
-                return NotFound(ModelState); 
-            }
-            return Ok(allUsersResult);
+
+            int loggedUserId = Convert.ToInt32(HttpContext.User.FindFirstValue("loggedUserId"));
+
+            Expression<Func<Project, bool>> filter =
+            u => 
+                (u.OwnerId == loggedUserId) && // only my projects will be visible
+                (string.IsNullOrEmpty(model.Filter.Title) || u.Title.Contains(model.Filter.Title)) &&
+                (string.IsNullOrEmpty(model.Filter.Description) || u.Description.Contains(model.Filter.Description)) &&
+                (model.Filter.OwnerId == null || u.OwnerId == model.Filter.OwnerId);
+
+
+
+           return Ok(service.GetAll(filter, model.OrderBy, model.SortAsc, model.Pager.Page, model.Pager.PageSize));
         }
 
         [HttpGet]
         [Route("{id}")]
         public IActionResult Get([FromRoute] int id)
         {
-            ModelState.AddModelError("Global", "User not found");
+            ModelState.AddModelError("Global", "Project not found");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");   
             ProjectServices service = new ProjectServices();
             var projectResult = service.GetById(id);
@@ -68,7 +89,7 @@ namespace API.Controllers
         [Route("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            ModelState.AddModelError("Global", "User not found");
+            ModelState.AddModelError("Global", "Project not found");
             ProjectServices service = new ProjectServices();
             var forDeleteResult = service.GetById(id);
             if (forDeleteResult is null)
@@ -85,7 +106,7 @@ namespace API.Controllers
         public IActionResult Put([FromRoute] int id, [FromBody] ProjectRequest model)
         {
             ProjectServices service = new ProjectServices();
-            ModelState.AddModelError("Global", "User not found");
+            ModelState.AddModelError("Global", "Project not found");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -103,6 +124,13 @@ namespace API.Controllers
             service.Save(forUpdate);
             // return Ok(model);
             return Ok(model);
+        }
+
+        [HttpGet]
+        [Route("{projectId}/addMember}")]
+        public IActionResult AddMember([FromRoute]int projectId, int userId)
+        {
+            return Ok("ProjectsController is working");
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using Common.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,5 +63,21 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
             .OnDelete(DeleteBehavior.Restrict); // when a User is deleted, their Projects are also deleted
               // otherwise not consistent behaviour of the database
               // do not do cascade behaviour in delete    
+
+        modelBuilder.Entity<Project>()
+            .HasMany(p => p.Members)
+            .WithMany()
+            .UsingEntity<ProjectMember>(
+                pm => pm
+                        .HasOne(pm => pm.User)
+                        .WithMany()
+                        .HasForeignKey(pm => pm.UserId),
+                pm => pm
+                        .HasOne(pm => pm.Project)
+                        .WithMany()
+                        .HasForeignKey(pm => pm.ProjectId),
+                pm => 
+                    pm.HasKey(t => new {t.ProjectId, t.UserId})
+            );
     }
 }

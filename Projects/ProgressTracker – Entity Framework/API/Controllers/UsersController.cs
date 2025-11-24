@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using API.Infrastructure.RequestDTOs.Projects;
 using API.Infrastructure.RequestDTOs.Users;
@@ -22,17 +24,31 @@ namespace API.Controllers
     public class UsersController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromBody] UserGetRequest model)
         {
+            model.Pager = model.Pager ?? new Infrastructure.RequestDTOs.Shared.PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0 ? 1 : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0 ? 10 : model.Pager.PageSize;
+            model.OrderBy ??= "Id";
+            model.OrderBy = typeof(User).GetProperty(model.OrderBy) != null ? model.OrderBy : "id";
+            model.Filter ??= new UserRequest();
             //ModelState.AddModelError("Global", "Empty users list");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");
             UsersServices service = new UsersServices();
-            var allUsersResult = service.GetAll();
-            if(allUsersResult.Count == 0)
-            {
-                return NotFound(ModelState); 
-            }
-            return Ok(allUsersResult);
+            Expression<Func<User, bool>> filter =
+                u => 
+                (string.IsNullOrEmpty(model.Filter.Username) || u.Username.Contains(model.Filter.Username)) &&
+                ( string.IsNullOrEmpty(model.Filter.FirstName) || u.Username.Contains(model.Filter.FirstName)) &&
+                (string.IsNullOrEmpty(model.Filter.LastName) || u.Username.Contains(model.Filter.LastName));
+
+
+        return Ok(service.GetAll(filter, model.OrderBy, model.SortAsc, model.Pager.Page, model.Pager.PageSize));
+            // var allUsersResult = service.GetAll();
+            // if(allUsersResult.Count == 0)
+            // {
+            //     return NotFound(ModelState); 
+            // }
+            // return Ok(allUsersResult);
         }
 
         [HttpGet]

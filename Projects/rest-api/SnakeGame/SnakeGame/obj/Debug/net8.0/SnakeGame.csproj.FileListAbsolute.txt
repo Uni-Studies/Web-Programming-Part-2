@@ -1,0 +1,15 @@
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\bin\Debug\net8.0\SnakeGame.exe
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\bin\Debug\net8.0\SnakeGame.deps.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\bin\Debug\net8.0\SnakeGame.runtimeconfig.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\bin\Debug\net8.0\SnakeGame.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\bin\Debug\net8.0\SnakeGame.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.GeneratedMSBuildEditorConfig.editorconfig
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.AssemblyInfoInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.AssemblyInfo.cs
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.csproj.CoreCompileInputs.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.sourcelink.json
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\refint\SnakeGame.dll
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.pdb
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\SnakeGame.genruntimeconfig.cache
+D:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\Projects\rest-api\SnakeGame\SnakeGame\obj\Debug\net8.0\ref\SnakeGame.dll
