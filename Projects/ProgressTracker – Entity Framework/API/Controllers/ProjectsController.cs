@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using API.Infrastructure.RequestDTOs.Projects;
@@ -34,13 +35,14 @@ namespace API.Controllers
             int loggedUserId = Convert.ToInt32(HttpContext.User.FindFirstValue("loggedUserId"));
 
             Expression<Func<Project, bool>> filter =
-            u => 
-                (u.OwnerId == loggedUserId) && // only my projects will be visible
-                (string.IsNullOrEmpty(model.Filter.Title) || u.Title.Contains(model.Filter.Title)) &&
-                (string.IsNullOrEmpty(model.Filter.Description) || u.Description.Contains(model.Filter.Description)) &&
-                (model.Filter.OwnerId == null || u.OwnerId == model.Filter.OwnerId);
-
-
+            p => 
+                (
+                    p.OwnerId == loggedUserId || 
+                    p.Members.Any(m => m.Id == loggedUserId)
+                ) && // only my projects will be visible
+                (string.IsNullOrEmpty(model.Filter.Title) || p.Title.Contains(model.Filter.Title)) &&
+                (string.IsNullOrEmpty(model.Filter.Description) || p.Description.Contains(model.Filter.Description)) &&
+                (model.Filter.OwnerId == null || p.OwnerId == model.Filter.OwnerId);
 
            return Ok(service.GetAll(filter, model.OrderBy, model.SortAsc, model.Pager.Page, model.Pager.PageSize));
         }
@@ -68,8 +70,9 @@ namespace API.Controllers
             string loggedUserId = this.HttpContext.User.FindFirst("loggedUserId")?.Value;
 
         
-            Project item = new Project
+            var item = new Project
             {
+                OwnerId = Convert.ToInt32(loggedUserId),
                 Title = model.Title,
                 Description = model.Description,
             };
@@ -126,8 +129,9 @@ namespace API.Controllers
             return Ok(model);
         }
 
+        // /api/projects/2/addmember?userId=5
+        [Route("{projectId}/addmember")]
         [HttpGet]
-        [Route("{projectId}/addMember}")]
         public IActionResult AddMember([FromRoute]int projectId, int userId)
         {
             return Ok("ProjectsController is working");

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "I4K9HDJiaK0=",
+  "dgSpecHash": "Qz8QQgp8qoU=",
   "success": true,
-  "projectFilePath": "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker – Entity Framework\\API\\API.csproj",
+  "projectFilePath": "D:\\Aneliya\\Uni\\Web Programming 2\\Web-Programming-Part-2\\Projects\\ProgressTracker – Entity Framework\\api\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\aneli\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\aneli\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

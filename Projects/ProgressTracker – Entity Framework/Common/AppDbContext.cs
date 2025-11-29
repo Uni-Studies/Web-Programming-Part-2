@@ -13,6 +13,9 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
 
     public DbSet<User> Users { get; set; } // represents the Users table in the database
     public DbSet<Project> Projects { get; set; } 
+    public DbSet<Task> Tasks { get; set; }
+
+    public DbSet<WorkLog> WorkLogs { get; set; }    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Configure the database connection string
@@ -38,6 +41,7 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region User
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id); 
 
@@ -53,7 +57,13 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
                          });
         base.OnModelCreating(modelBuilder);
 
+        #endregion
+
+        #region Project
         modelBuilder.Entity<Project>()
+            //.Property(p => p.Id)
+            //.IsRequired()
+            //.HasColumnName("Shiiitt") validations on level databases
             .HasKey(p => p.Id);
 
         modelBuilder.Entity<Project>()
@@ -79,5 +89,35 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
                 pm => 
                     pm.HasKey(t => new {t.ProjectId, t.UserId})
             );
+
+        #endregion
+    
+        #region Task
+        modelBuilder.Entity<Task>()
+            .HasOne(t => t.Owner)
+            .WithMany()
+            .HasForeignKey(t => t.OwnerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Task>()
+            .HasOne(t => t.Project)
+            .WithMany()
+            .HasForeignKey(t => t.ProjectId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region WorkLog
+        modelBuilder.Entity<WorkLog>()
+            .HasOne(wl => wl.User)
+            .WithMany()
+            .HasForeignKey(wl => wl.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<WorkLog>()
+            .HasOne(wl => wl.Task)
+            .WithMany()
+            .HasForeignKey(wl => wl.TaskId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
     }
 }

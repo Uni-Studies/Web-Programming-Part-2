@@ -19,6 +19,7 @@
   <ItemGroup>
     <Folder Include="Infrastructure\ResponseDTOs\" />
     <Folder Include="Infrastructure\ResponseDTOs\Auth\" />
+    <Folder Include="Infrastructure\Validators\Tasks\" />
   </ItemGroup>
 
 </Project>
