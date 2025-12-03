@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using API.Infrastructure.RequestDTOs.Projects;
 using API.Infrastructure.RequestDTOs.Users;
+using API.Infrastructure.ResponseDTOs.Shared;
+using API.Infrastructure.ResponseDTOs.Users;
 using API.Services;
 using Common;
 using Common.Entities;
@@ -31,7 +33,7 @@ namespace API.Controllers
             model.Pager.PageSize = model.Pager.PageSize <= 0 ? 10 : model.Pager.PageSize;
             model.OrderBy ??= "Id";
             model.OrderBy = typeof(User).GetProperty(model.OrderBy) != null ? model.OrderBy : "id";
-            model.Filter ??= new UserRequest();
+            model.Filter ??= new UsersGetFilterRequest();
             //ModelState.AddModelError("Global", "Empty users list");
             //string loggedUserId = this.User.FindFirstValue("loggedUserId");
             UsersServices service = new UsersServices();
@@ -41,8 +43,22 @@ namespace API.Controllers
                 ( string.IsNullOrEmpty(model.Filter.FirstName) || u.Username.Contains(model.Filter.FirstName)) &&
                 (string.IsNullOrEmpty(model.Filter.LastName) || u.Username.Contains(model.Filter.LastName));
 
+            var response = new UsersGetResponse();
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
 
-        return Ok(service.GetAll(filter, model.OrderBy, model.SortAsc, model.Pager.Page, model.Pager.PageSize));
+            response.OrderBy = model.OrderBy;
+            response.SortAsc = model.SortAsc;
+            response.Filter = model.Filter;
+
+            response.Pager.Count = service.Count(filter);
+            response.Items = service.GetAll(filter, model.OrderBy, model.SortAsc, model.Pager.Page, model.Pager.PageSize);
+
+            return Ok(ServiceResult<UsersGetResponse>.Success(response));
+
+        //return Ok(service.GetAll(filter, model.OrderBy, model.SortAsc, model.Pager.Page, model.Pager.PageSize));
+            
             // var allUsersResult = service.GetAll();
             // if(allUsersResult.Count == 0)
             // {
@@ -63,7 +79,7 @@ namespace API.Controllers
             {
                 return NotFound(ModelState);
             }
-            return Ok(userResult);
+            return Ok(ServiceResult<User>.Success(userResult));
         }
 
         [HttpPost]
@@ -100,7 +116,7 @@ namespace API.Controllers
             service.Save(user);
             
             // return Ok(model);
-            return Ok(model);
+            return Ok(ServiceResult<User>.Success(user));
         }
 
         [HttpDelete] // for single parameter
@@ -116,7 +132,7 @@ namespace API.Controllers
 
             service.Delete(forDeleteResult);
 
-            return Ok(forDeleteResult);
+            return Ok(ServiceResult<User>.Success(forDeleteResult));
         }
 
         [HttpPut]
@@ -143,7 +159,7 @@ namespace API.Controllers
             
             service.Save(forUpdate);
             // return Ok(model);
-            return Ok(model);
+            return Ok(ServiceResult<User>.Success(forUpdate));
         }
     }
 }

@@ -7,6 +7,18 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+}); // Cross-Origin Resource Sharing (CORS) configuration to allow requests from any origin
+// lets each query access the API
+
 builder.Services.AddControllers() // dependency injection
             .ConfigureApiBehaviorOptions(options =>
             {
@@ -36,9 +48,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) //put
 // returns an instance of authentication builder. addJwtBearer is a method giving the options for solving jwt bearer authentication 
 
 var app = builder.Build();
+app.UseCors(); // enable CORS middleware FIRST before auth/https redirect
 app.UseHttpsRedirection(); // rejects http requests and wants https
 app.UseAuthorization();
 app.UseAuthentication(); // check for valid token with the request; configured as a service
+
 // middleware must be before the endpoint resolving
 app.MapControllers();
 

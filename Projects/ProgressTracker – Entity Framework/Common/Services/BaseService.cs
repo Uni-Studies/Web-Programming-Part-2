@@ -84,4 +84,12 @@ where T : BaseEntity
         Items.Remove(forDelete);
         DbContext.SaveChanges();
     }
+
+    public int Count(Expression<Func<T, bool>> filter = null)
+    {
+        var query = Items.AsQueryable();
+        if (filter != null)
+            query = query.Where(filter);
+        return query.Count();;
+    }
 }

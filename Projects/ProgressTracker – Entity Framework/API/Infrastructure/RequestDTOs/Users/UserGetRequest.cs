@@ -3,7 +3,7 @@ using API.Infrastructure.RequestDTOs.Shared;
 
 namespace API.Infrastructure.RequestDTOs.Users;
 
-public class UserGetRequest: BaseGetRequest<UserRequest>
+public class UserGetRequest: BaseGetRequest<UsersGetFilterRequest>
 {
     // public PagerRequest Pager {get; set;}
     // public string OrderBy {get; set;}

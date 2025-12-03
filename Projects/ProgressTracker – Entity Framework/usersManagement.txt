@@ -1,0 +1,32 @@
+Create a React application
+Don't use Axios, use Fetch API instead.
+Don't use Redux, use React hooks instead.
+
+Create the React application in a new folder named FrontEnd.
+Use vite.
+Use the SBAdmin2 theme. Add links to the application features to the menu on the left.
+
+Implement Login using JWT token.
+Use the following endpoint to obtain a token:
+------------------------------------
+POST https://localhost:5000/api/Auth
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=adminpass
+
+------------------------------------
+
+Create Users Management feature where User entities can be listed, created, edited and deleted.
+Take the structure of the User entity from User.cs (which inherits from BaseEntity.cs).
+The endpoint for getting user data is:
+GET https://localhost:5000/api/Users?OrderBY=Id&SortAsc-true&Pager.Page=1&Pager.PageSize=10&Filter.Username=n&Filter.FirstName=n&Filter.LastName=n
+
+Place entities, services and components into separate folders.
+separate services into separate files based in the entities they manage.
+
+Extract baseURL setting globally.
+
+
+
+npm install
+npm run dev

@@ -1,0 +1,5 @@
+body { font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+#root { height: 100%; }
+/* small helpers */
+.sidebar { min-width: 200px; }
+.container-fluid { padding-top: 1rem; }

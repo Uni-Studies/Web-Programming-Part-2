@@ -21,5 +21,5 @@ public class UserRequest
     //[Required(ErrorMessage = "This field is required.")]
     public string LastName { get; set; }
 
-    public List<ProjectRequest> Projects { get; set; } 
+    //public List<ProjectRequest> Projects { get; set; } 
 }

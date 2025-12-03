@@ -1,0 +1,9 @@
+Add Paging to the Users Management listing Page
+Pageing settings should contain:
+- Page
+- ItemsperPage
+
+The pages should be displayed in the forms of links or buttons
+Items per page should be in the form of dropdown
+When the items per page selection changes, the new settings should be applied and the data should be refreshed.
+

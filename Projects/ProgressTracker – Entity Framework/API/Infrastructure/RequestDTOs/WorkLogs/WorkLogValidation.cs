@@ -11,8 +11,8 @@ public class WorkLogRequestValidator : AbstractValidator<WorkLogRequest>
         RuleFor(x => x.WorkDuration)
             .GreaterThan(0).WithMessage("WorkDuration must be a positive integer representing minutes.");
 
-        RuleFor(x => x.LogDate)
-            .Must(d => d != default && d <= DateOnly.FromDateTime(DateTime.UtcNow))
+        _ = RuleFor(x => x.LogDate)
+            .Must(d => d != default && d <= DateTime.UtcNow)
             .WithMessage("LogDate must be specified and cannot be in the future.");
     }
 }
