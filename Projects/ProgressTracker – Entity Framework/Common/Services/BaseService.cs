@@ -46,8 +46,10 @@ where T : BaseEntity
             }
         }
 
-        query = query.Skip((page - 1)* itemsPerPage)
-                     .Take(itemsPerPage);
+        query = query
+                    .Skip((page - 1) * itemsPerPage)
+                    .Take(itemsPerPage);
+
         return query.ToList();
         //return Items.ToList();
         //return context.Users.ToList();
@@ -77,11 +79,11 @@ where T : BaseEntity
     {
         //AppDbContext context = new AppDbContext();
 
-        T forDelete = Items.FirstOrDefault(x => x.Id == item.Id);
-        if (forDelete == null)
-            throw new Exception("Item not found");
+        // T forDelete = Items.FirstOrDefault(x => x.Id == item.Id);
+        // if (forDelete == null)
+        //     throw new Exception("Item not found");
 
-        Items.Remove(forDelete);
+        Items.Remove(item);
         DbContext.SaveChanges();
     }
 

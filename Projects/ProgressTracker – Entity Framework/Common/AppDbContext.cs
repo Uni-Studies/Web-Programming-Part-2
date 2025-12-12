@@ -81,11 +81,13 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
                 pm => pm
                         .HasOne(pm => pm.User)
                         .WithMany()
-                        .HasForeignKey(pm => pm.UserId),
+                        .HasForeignKey(pm => pm.UserId)
+                        .OnDelete(DeleteBehavior.Restrict),
                 pm => pm
                         .HasOne(pm => pm.Project)
                         .WithMany()
-                        .HasForeignKey(pm => pm.ProjectId),
+                        .HasForeignKey(pm => pm.ProjectId)
+                        .OnDelete(DeleteBehavior.Restrict),
                 pm => 
                     pm.HasKey(t => new {t.ProjectId, t.UserId})
             );
@@ -93,10 +95,20 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
         #endregion
     
         #region Task
+        
+        modelBuilder.Entity<Task>()
+            .HasKey(t => t.Id);
+
         modelBuilder.Entity<Task>()
             .HasOne(t => t.Owner)
             .WithMany()
             .HasForeignKey(t => t.OwnerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Task>()
+            .HasOne(t => t.Assignee)
+            .WithMany()
+            .HasForeignKey(t => t.AssigneeId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Task>()
@@ -107,6 +119,10 @@ public class AppDbContext : DbContext // DbContext in Microsoft.EntityFrameworkC
         #endregion
 
         #region WorkLog
+
+        modelBuilder.Entity<WorkLog>()
+            .HasKey(wl => wl.Id);
+
         modelBuilder.Entity<WorkLog>()
             .HasOne(wl => wl.User)
             .WithMany()

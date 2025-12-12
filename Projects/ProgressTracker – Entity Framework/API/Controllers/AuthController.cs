@@ -38,7 +38,9 @@ namespace API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(
+                    ServiceResultExtensions<List<Error>>.Failure(null, ModelState)
+                );
             }
             
             UsersServices service = new UsersServices();
@@ -50,7 +52,9 @@ namespace API.Controllers
             {
                 ModelState.AddModelError("Global", "Invalid username or password");
                 
-                return Unauthorized(ModelState);
+                return Unauthorized(
+                    ServiceResultExtensions<List<Error>>.Failure(null, ModelState)
+                );
                 // var errors = new List<Error>();
                 // foreach(var kvp in ModelState)
                 // {

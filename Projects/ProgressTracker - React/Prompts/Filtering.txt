@@ -1,0 +1,14 @@
+Add Filtering to the Users Management listing page UsersList.jsx
+I should be able to filter by
+ - Username
+ - FirstName
+ - LastName
+
+Filter data should be provided to the endpoint via Query parameters:
+
+GET https://localhost:5000/api/Users?OrderBy=Id&SortAsc=true&Pager.Page=1&Pager.PageSize=10&Filter.Username=n&Filter.FirstName=n&Filter.LastName=n
+
+Filter should be displayed above the Users grid. In the form of TextBox inputs.
+I should have two buttons:
+ - Filter (applies the filter)
+ - Clear (clears the filter)

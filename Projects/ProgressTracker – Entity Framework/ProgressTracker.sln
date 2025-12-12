@@ -7,43 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{2D9E554F-01CA-4DCE-BC4B-5DA26A786641}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{3F1A2B6C-92E4-47D9-8C5E-7D9F4E2A1C8B}"
-	ProjectSection(SolutionItems) = preProject
-		FrontEnd\package.json = FrontEnd\package.json
-		FrontEnd\vite.config.js = FrontEnd\vite.config.js
-		FrontEnd\index.html = FrontEnd\index.html
-		FrontEnd\README.md = FrontEnd\README.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "FrontEnd\src", "{4G2B3C7D-A3F5-48E0-9D6F-8E0A5F3B2D9C}"
-	ProjectSection(SolutionItems) = preProject
-		FrontEnd\src\main.jsx = FrontEnd\src\main.jsx
-		FrontEnd\src\App.jsx = FrontEnd\src\App.jsx
-		FrontEnd\src\styles.css = FrontEnd\src\styles.css
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "FrontEnd\src\components", "{5H3C4D8E-B4G6-49F1-0E7G-9F1B6G4C3E0D}"
-	ProjectSection(SolutionItems) = preProject
-		FrontEnd\src\components\Layout.jsx = FrontEnd\src\components\Layout.jsx
-		FrontEnd\src\components\Sidebar.jsx = FrontEnd\src\components\Sidebar.jsx
-		FrontEnd\src\components\Topbar.jsx = FrontEnd\src\components\Topbar.jsx
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pages", "FrontEnd\src\pages", "{6I4D5E9F-C5H7-50G2-1F8H-0G2C7H5D4F1E}"
-	ProjectSection(SolutionItems) = preProject
-		FrontEnd\src\pages\Login.jsx = FrontEnd\src\pages\Login.jsx
-		FrontEnd\src\pages\Users.jsx = FrontEnd\src\pages\Users.jsx
-		FrontEnd\src\pages\UserForm.jsx = FrontEnd\src\pages\UserForm.jsx
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "FrontEnd\src\services", "{7J5E6F0G-D6I8-51H3-2G9I-1H3D8I6E5G2F}"
-	ProjectSection(SolutionItems) = preProject
-		FrontEnd\src\services\config.js = FrontEnd\src\services\config.js
-		FrontEnd\src\services\api.js = FrontEnd\src\services\api.js
-		FrontEnd\src\services\authService.js = FrontEnd\src\services\authService.js
-		FrontEnd\src\services\userService.js = FrontEnd\src\services\userService.js
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prompts", "prompts", "{2E256426-51E0-8F23-3502-2BF0049D083E}"
 	ProjectSection(SolutionItems) = preProject
 		usersManagement.txt = usersManagement.txt
@@ -87,11 +50,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{4G2B3C7D-A3F5-48E0-9D6F-8E0A5F3B2D9C} = {3F1A2B6C-92E4-47D9-8C5E-7D9F4E2A1C8B}
-		{5H3C4D8E-B4G6-49F1-0E7G-9F1B6G4C3E0D} = {4G2B3C7D-A3F5-48E0-9D6F-8E0A5F3B2D9C}
-		{6I4D5E9F-C5H7-50G2-1F8H-0G2C7H5D4F1E} = {4G2B3C7D-A3F5-48E0-9D6F-8E0A5F3B2D9C}
-		{7J5E6F0G-D6I8-51H3-2G9I-1H3D8I6E5G2F} = {4G2B3C7D-A3F5-48E0-9D6F-8E0A5F3B2D9C}
 	EndGlobalSection
 EndGlobal

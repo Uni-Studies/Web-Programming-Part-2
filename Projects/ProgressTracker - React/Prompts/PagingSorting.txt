@@ -1,0 +1,58 @@
+Add Paging to the Users Management listing page UsersList.jsx
+Paging settngs should contain:
+ - Page
+ - ItemsPerPage
+
+Pages should be displayed in the form of links or buttons.
+Items per page should be in the form of a dropdown list.
+When the items per page selection changes the new settings should be applied and the data should be refreshed.
+
+Paging information can be extracted from the data.pager property of the response:
+{
+    "isSuccess": true,
+    "data": {
+        "items": [
+            {
+                "username": "asdfasfd",
+                "password": "asdfasdf",
+                "firstName": "asdfasdf",
+                "lastName": "asdfasdf",
+                "id": 7
+            },
+            {
+                "username": "asdf",
+                "password": "asdf",
+                "firstName": "asdf",
+                "lastName": "asdf",
+                "id": 6
+            },
+            {
+                "username": "nvalchanov",
+                "password": "nikipass",
+                "firstName": "Nikola",
+                "lastName": "Valchanov",
+                "id": 2
+            },
+            {
+                "username": "admin",
+                "password": "adminpass",
+                "firstName": "Admini",
+                "lastName": "Strator",
+                "id": 1
+            }
+        ],
+        "pager": {
+            "count": 4,
+            "page": 1,
+            "pageSize": 10
+        },
+        "orderBy": "Id",
+        "sortAsc": false,
+        "filter": {
+            "username": null,
+            "firstName": null,
+            "lastName": null
+        }
+    },
+    "errors": null
+}
