@@ -1,0 +1,5 @@
+d:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\PortfolioAPI\Common\obj\Debug\net9.0\Common.GeneratedMSBuildEditorConfig.editorconfig
+d:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\PortfolioAPI\Common\obj\Debug\net9.0\Common.AssemblyInfoInputs.cache
+d:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\PortfolioAPI\Common\obj\Debug\net9.0\Common.AssemblyInfo.cs
+d:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\PortfolioAPI\Common\obj\Debug\net9.0\Common.csproj.CoreCompileInputs.cache
+d:\Aneliya\Uni\Web Programming 2\Web-Programming-Part-2\PortfolioAPI\Common\obj\Debug\net9.0\Common.sourcelink.json

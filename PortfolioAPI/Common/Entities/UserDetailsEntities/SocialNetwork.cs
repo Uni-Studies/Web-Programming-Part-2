@@ -1,4 +1,5 @@
 using System;
+using Common.Entities.UserDetailsEntities;
 
 namespace Common.Entities;
 

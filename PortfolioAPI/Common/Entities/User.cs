@@ -4,6 +4,7 @@ namespace Common.Entities;
 
 public class User : AuthUser
 {
+    public int AuthUserId { get; set; }
     public string Sex { get; set; }
     public DateOnly BirthDate { get; set; }
     public string BirthCity { get; set; }
