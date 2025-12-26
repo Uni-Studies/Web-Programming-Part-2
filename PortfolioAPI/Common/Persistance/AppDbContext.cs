@@ -18,4 +18,42 @@ public class AppDbContext : DbContext
     public DbSet<Course> Courses { get; set; }
     public DbSet<Work> Works { get; set; }
     public DbSet<Skill> Skills { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        //base.OnConfiguring(optionsBuilder);
+        optionsBuilder
+            .UseLazyLoadingProxies()
+            .UseSqlServer(@"
+                Data Source=(localdb)\MSSQLLocalDB;
+                Database = PortfolioDb;
+                User Ud=alyavova;
+                Password=alyavova;
+                TrustServerCertificate=True;");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        #region AuthUser
+        modelBuilder.Entity<AuthUser>()
+            .HasKey(au => au.Id);
+
+        modelBuilder.Entity<AuthUser>()
+            .HasData(new AuthUser
+            {
+                Id = 1, 
+                FirstName = "admin",
+                LastName = "admin",
+                Username = "admin",
+                Email = "stu2401321005@uni-plovdiv.bg",
+                Password = "adminpass"
+            });
+        #endregion
+
+        #region User
+        modelBuilder.Entity<User>()
+            .HasKey(u => u.Id);
+
+        
+    }
 }

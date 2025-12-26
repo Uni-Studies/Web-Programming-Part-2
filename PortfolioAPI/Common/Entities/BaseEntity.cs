@@ -4,5 +4,5 @@ namespace Common.Entities;
 
 public class BaseEntity
 {
-    public int Id { get; private set; }
+    public int Id { get; set; }
 }
