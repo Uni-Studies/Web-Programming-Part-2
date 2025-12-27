@@ -9,4 +9,5 @@ public class SocialNetwork: BaseEntity
     public string Type { get; set; }
     public string Account { get; set; }
     public string Link { get; set; }
+    public User User { get; set; }
 }

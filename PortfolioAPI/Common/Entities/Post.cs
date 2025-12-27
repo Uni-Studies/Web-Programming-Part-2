@@ -7,4 +7,5 @@ public class Post : BaseEntity
     public int UserId { get; set; }
     public string Location { get; set; }
     public string Description { get; set; }
+    public User User { get; set; }
 }

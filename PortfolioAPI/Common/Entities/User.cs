@@ -2,7 +2,7 @@ using System;
 
 namespace Common.Entities;
 
-public class User : AuthUser
+public class User : BaseEntity
 {
     public int AuthUserId { get; set; }
     public string Sex { get; set; }
@@ -13,4 +13,6 @@ public class User : AuthUser
     public string Nationality { get; set; }
     public string Details { get; set; }
     public string Image { get; set; }
+
+    public AuthUser AuthUser { get; set; }
 }

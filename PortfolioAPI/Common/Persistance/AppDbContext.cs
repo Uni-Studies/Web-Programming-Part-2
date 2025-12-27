@@ -1,6 +1,8 @@
 using System;
 using System.Data.Common;
 using Common.Entities;
+using Common.Entities.ManyToManyEntities;
+using Common.Entities.UserDetailsEntities;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -34,10 +36,12 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        #region AuthUser
-        modelBuilder.Entity<AuthUser>()
-            .HasKey(au => au.Id);
+        #region BaseEntity
+        modelBuilder.Entity<BaseEntity>()
+            .HasKey(be => be.Id);
+        #endregion
 
+        #region AuthUser
         modelBuilder.Entity<AuthUser>()
             .HasData(new AuthUser
             {
@@ -52,8 +56,92 @@ public class AppDbContext : DbContext
 
         #region User
         modelBuilder.Entity<User>()
-            .HasKey(u => u.Id);
+            .HasOne(u => u.AuthUser)
+            .WithOne()
+            .HasForeignKey<User>(u => u.AuthUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion User
 
-        
+        #region Post
+        modelBuilder.Entity<Post>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region Image
+        modelBuilder.Entity<Image>()
+            .HasOne<Image>()
+            .WithMany()
+            .HasForeignKey(i => i.ItemId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region Social Networks
+        modelBuilder.Entity<SocialNetwork>()
+            .HasOne(sn => sn.User)
+            .WithMany()
+            .HasForeignKey(sn => sn.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region UserDetailsBaseEntity
+        modelBuilder.Entity<UserDetailsBaseEntity>()
+            .HasMany(ud => ud.Users)
+            .WithMany()
+            .UsingEntity<UserSubmission>(
+                us => us
+                        .HasOne(us => us.User)
+                        .WithMany()
+                        .HasForeignKey(us => us.UserId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                us => us
+                        .HasOne(us => us.Submission)
+                        .WithMany()
+                        .HasForeignKey(us => us.SubmissionId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                us => 
+                    us.HasKey(t => new { t.UserId, t.SubmissionId })
+            );
+        #endregion
+
+        #region Skills
+        modelBuilder.Entity<Skill>()
+            .HasMany(u => u.Users)
+            .WithMany()
+            .UsingEntity<UserSkill>(
+                us => us
+                        .HasOne(us => us.User)
+                        .WithMany()
+                        .HasForeignKey(us => us.UserId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                us => us    
+                        .HasOne(us => us.Skill)
+                        .WithMany()
+                        .HasForeignKey(us => us.SkillId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                us => 
+                    us.HasKey(t => new { t.UserId, t.SkillId })
+            );
+
+        modelBuilder.Entity<Skill>()
+            .HasMany(u => u.Sources)
+            .WithMany()
+            .UsingEntity<SubmissionSkill>(
+                us => us
+                        .HasOne(us => us.Submission)
+                        .WithMany()
+                        .HasForeignKey(us => us.SubmissionId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                us => us    
+                        .HasOne(us => us.Skill)
+                        .WithMany()
+                        .HasForeignKey(us => us.SkillId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                us => 
+                    us.HasKey(t => new { t.SubmissionId, t.SkillId })
+            );
+        #endregion
     }
 }
