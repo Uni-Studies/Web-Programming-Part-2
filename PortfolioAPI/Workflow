@@ -1,66 +1,42 @@
-# 📌 PortfolioAPI – Project Workflow
+# изпълнение
 
-Личен тракер за разработката на PortfolioAPI  
-(Backend + Frontend)
-
----
-
-## 🧭 Статуси
-- ✅ Done
-- 🟧 In progress
-- 🟥 Planned
-- ⏸ Paused
-
----
-
-## 📊 Основен Workflow
-
-| № | Задание | Статус | Дата | Какво е свършено | Какво следва | Ресурси за учене |
-|---|---------|--------|------|------------------|--------------|------------------|
-| 01 | Създаване на ASP.NET Core Web API проект | ✅ | 2025-01-10 | Проектът е създаден | — | ASP.NET Core Web API overview |
-| 02 | Създаване на GitHub repository | ✅ | 2025-01-10 | Repo + initial commit | — | Git basics |
-| 03 | Основна проектна структура (layers) | ✅ | 2025-01-11 | Controllers, Services, Models | — | Clean Architecture |
-| 04 | Entity модели | 🟧 | 2025-01-12 | Основни entities | Добавяне на relationships | EF Core entities |
-| 05 | DbContext и връзка с база | 🟧 | 2025-01-13 | DbContext конфигуриран | Migrations | EF Core DbContext |
-| 06 | Migrations и база данни | 🟥 | — | — | Първа migration | EF Core migrations |
-| 07 | DTOs | 🟧 | 2025-01-14 | Част от DTO моделите | Липсващи DTO | DTO pattern |
-| 08 | Services (Business Logic) | 🟧 | 2025-01-15 | Основни услуги | Refactor | Service layer pattern |
-| 09 | Controllers (API endpoints) | 🟧 | 2025-01-16 | CRUD endpoints | Validation | RESTful APIs |
-| 10 | FluentValidation | 🟥 | — | — | Input validation | FluentValidation |
-| 11 | Global error handling | 🟥 | — | — | Exception middleware | Exception handling ASP.NET |
-| 12 | Authentication (JWT) | 🟥 | — | — | Login / Register | JWT in ASP.NET Core |
-| 13 | Authorization (Roles / Policies) | 🟥 | — | — | Role-based access | ASP.NET Authorization |
-| 14 | Swagger / OpenAPI | 🟧 | 2025-01-18 | Основна конфигурация | Описания | Swagger |
-| 15 | Logging | 🟥 | — | — | Serilog | Logging ASP.NET |
-| 16 | Unit Tests (Backend) | 🟥 | — | — | xUnit setup | Unit testing ASP.NET |
-| 17 | React Frontend – setup | 🟥 | — | — | Create React App / Vite | React basics |
-| 18 | React – API integration | 🟥 | — | — | Fetch / Axios | React + REST |
-| 19 | Authentication (JWT) – Frontend | 🟥 | — | — | Token handling | JWT frontend |
-| 20 | UI / UX | 🟥 | — | — | Основни страници | React components |
-| 21 | Integration Backend ↔ Frontend | 🟥 | — | — | Свързване | Full-stack flow |
-| 22 | Final testing & cleanup | 🟥 | — | — | Refactor | Code review |
-
----
-
-## 🗓️ Daily Work Log
-
-| Дата | Какво направих |
-|------|----------------|
-| 2025-01-10 | Създадох проекта и GitHub repo |
-| 2025-01-12 | Добавих entity модели |
-| 2025-01-15 | Започнах service layer |
-
----
-
-## 📚 Ресурси (общо)
-- Microsoft Docs – ASP.NET Core
-- Entity Framework Core Docs
-- FluentValidation Docs
-- JWT Authentication (MS Docs)
-- React Documentation
-
----
-
-## 🏁 Бележки
-- Таблицата се обновява след всяка работна сесия
-- „Ресурси за учене“ = какво трябва да прегледам преди/по време на задачата
+| ресурс | статус | дата | какво е направено | ресурси за четене |
+|------|--------|------|-------------------|-------------------|
+| 01.ProjectSetup | 🟩 90% | 2025-01-10 | Създаден ASP.NET Core Web API проект | ASP.NET Core Web API overview |
+| ../CreateProject | Y | 2025-01-10 | dotnet new webapi | dotnet CLI |
+| ../GitHubRepo | Y | 2025-01-10 | Repo в GitHub + initial commit | Git & GitHub basics |
+| ../SolutionStructure | Y | 2025-01-11 | Controllers / Services / Models | Clean Architecture |
+| 02.Database | 🟧 60% | 2025-01-12 | Основна DB конфигурация | EF Core |
+| ../Entities | wip | 2025-01-12 | Entity модели | EF Core Entities |
+| ../DbContext | Y | 2025-01-13 | DbContext конфигуриран | DbContext |
+| ../Migrations |  |  |  | EF Core Migrations |
+| 03.DTOs | 🟧 50% | 2025-01-14 | Част от DTO моделите | DTO pattern |
+| ../CreateDTOs | wip | 2025-01-14 | Request / Response DTO | Mapping |
+| ../AutoMapper |  |  |  | AutoMapper |
+| 04.Services | 🟧 40% | 2025-01-15 | Business logic | Service Layer |
+| ../ServiceInterfaces | Y | 2025-01-15 | Интерфейси | SOLID |
+| ../ServiceImplementations | wip | 2025-01-16 | Имплементации | Dependency Injection |
+| 05.Controllers | 🟧 40% | 2025-01-16 | CRUD endpoints | REST APIs |
+| ../CrudControllers | wip | 2025-01-16 | GET / POST / PUT / DELETE | REST |
+| ../ValidationHook |  |  |  | Model validation |
+| 06.Validation | 🟥 0% |  |  | FluentValidation |
+| ../FluentValidation |  |  |  | FluentValidation Docs |
+| ../ValidationMiddleware |  |  |  | Validation pipeline |
+| 07.Security | 🟥 0% |  |  | Authentication |
+| ../JWTAuthentication |  |  |  | JWT ASP.NET Core |
+| ../AuthorizationRoles |  |  |  | Role-based auth |
+| 08.Swagger | 🟧 70% | 2025-01-18 | Swagger добавен | Swagger |
+| ../SwaggerConfig | Y | 2025-01-18 | OpenAPI setup | Swagger UI |
+| ../SwaggerAuth |  |  |  | JWT in Swagger |
+| 09.Logging | 🟥 0% |  |  | Logging |
+| ../Serilog |  |  |  | Serilog |
+| 10.Testing | 🟥 0% |  |  | Testing |
+| ../UnitTests |  |  |  | xUnit |
+| 11.Frontend | 🟥 0% |  |  | React |
+| ../ReactSetup |  |  |  | Vite / CRA |
+| ../ApiIntegration |  |  |  | Axios |
+| ../JwtHandling |  |  |  | Auth flow |
+| ../UIComponents |  |  |  | React components |
+| 12.Finalization | 🟥 0% |  |  | Cleanup |
+| ../Refactor |  |  |  | Clean Code |
+| ../Documentation |  |  |  | README |
