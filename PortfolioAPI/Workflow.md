@@ -14,8 +14,8 @@
 | 03.DTOs | 🟥 0%  | 2025-01-14 | Част от DTO моделите | DTO pattern |
 | ../CreateDTOs | wip |  | Request / Response DTO | Mapping |
 | ../AutoMapper |  |  |  | AutoMapper |
-| 04.Services | 🟧 40% | 2025-01-15 | Business logic | Service Layer |
-| ../Common/Services/BaseServices | Y | 28-12-2025 | Services for entities | SOLID; change tracking |
+| 04.Services | 🟧 40% | 2025-01-15 | Business logic | Service Layer | https://learn.microsoft.com/bg-bg/ef/core/dbcontext-configuration/#dbcontext-in-dependency-injection-for-aspnet-core
+| ../Common/Services/BaseServices | Y | 28-12-2025 | Services for entities | SOLID; change tracking | https://learn.microsoft.com/bg-bg/ef/core/change-tracking/
 | ../Common/Services | Y | 28-12-2025 | Implementation; inherit from BaseServices.cs |  |
 | 05.Controllers | 🟥 0% | - | CRUD endpoints | REST APIs |
 | ../CrudControllers | wip | - | GET / POST / PUT / DELETE | REST |
