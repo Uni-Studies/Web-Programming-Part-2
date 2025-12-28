@@ -1,84 +1,66 @@
-# 📂 PortfolioAPI – Development Workflow
+# 📌 PortfolioAPI – Project Workflow
 
-Този файл служи като **централен дневник и тракер** за разработката на проекта.
-Използва се за:
-- проследяване на напредъка
-- планиране на следващи стъпки
-- аргументация при защита
+Личен тракер за разработката на PortfolioAPI  
+(Backend + Frontend)
 
 ---
 
 ## 🧭 Статуси
 - ✅ Done
-- 🟩 Almost done
 - 🟧 In progress
 - 🟥 Planned
 - ⏸ Paused
 
 ---
 
-## 🚀 Основен Workflow
+## 📊 Основен Workflow
 
-| № | Модул / Функционалност | Статус | Начало | Последна работа | Следваща стъпка |
-|---|------------------------|--------|--------|-----------------|-----------------|
-| 01 | Repository & Git setup | ✅ | 2025-01-10 | 2025-01-10 | — |
-| 02 | Project structure (API layers) | 🟩 | 2025-01-11 | 2025-01-12 | Финално почистване |
-| 03 | Entity Models | ✅ | 2025-01-12 | 2025-01-13 | — |
-| 04 | DTOs | 🟧 | 2025-01-13 | 2025-01-14 | Липсващи модели |
-| 05 | DbContext & EF Core | 🟩 | 2025-01-14 | 2025-01-15 | Final migration |
-| 06 | Controllers (CRUD) | 🟧 | 2025-01-15 | 2025-01-16 | Validation |
-| 07 | Services Layer | 🟧 | 2025-01-16 | 2025-01-17 | Refactor |
-| 08 | Authentication (JWT) | 🟥 | — | — | Setup Identity |
-| 09 | Authorization (Roles) | 🟥 | — | — | Role policies |
-| 10 | Global Error Handling | 🟥 | — | — | Middleware |
-| 11 | Swagger / API Docs | 🟩 | 2025-01-18 | 2025-01-18 | Endpoint descriptions |
-| 12 | Testing | 🟥 | — | — | Unit tests |
-| 13 | Final Review & Cleanup | 🟥 | — | — | Refactor & docs |
-
----
-
-## 🗓️ Development Log (Daily)
-
-| Дата | Какво е направено |
-|-----|-------------------|
-| 2025-01-10 | Създаване на repo, initial commit |
-| 2025-01-12 | Структура на проекта, слоеве |
-| 2025-01-14 | EF Core + първа migration |
-| 2025-01-16 | CRUD controllers |
-
-*(Добавяй по 1 ред на ден – супер полезно за защита)*
+| № | Задание | Статус | Дата | Какво е свършено | Какво следва | Ресурси за учене |
+|---|---------|--------|------|------------------|--------------|------------------|
+| 01 | Създаване на ASP.NET Core Web API проект | ✅ | 2025-01-10 | Проектът е създаден | — | ASP.NET Core Web API overview |
+| 02 | Създаване на GitHub repository | ✅ | 2025-01-10 | Repo + initial commit | — | Git basics |
+| 03 | Основна проектна структура (layers) | ✅ | 2025-01-11 | Controllers, Services, Models | — | Clean Architecture |
+| 04 | Entity модели | 🟧 | 2025-01-12 | Основни entities | Добавяне на relationships | EF Core entities |
+| 05 | DbContext и връзка с база | 🟧 | 2025-01-13 | DbContext конфигуриран | Migrations | EF Core DbContext |
+| 06 | Migrations и база данни | 🟥 | — | — | Първа migration | EF Core migrations |
+| 07 | DTOs | 🟧 | 2025-01-14 | Част от DTO моделите | Липсващи DTO | DTO pattern |
+| 08 | Services (Business Logic) | 🟧 | 2025-01-15 | Основни услуги | Refactor | Service layer pattern |
+| 09 | Controllers (API endpoints) | 🟧 | 2025-01-16 | CRUD endpoints | Validation | RESTful APIs |
+| 10 | FluentValidation | 🟥 | — | — | Input validation | FluentValidation |
+| 11 | Global error handling | 🟥 | — | — | Exception middleware | Exception handling ASP.NET |
+| 12 | Authentication (JWT) | 🟥 | — | — | Login / Register | JWT in ASP.NET Core |
+| 13 | Authorization (Roles / Policies) | 🟥 | — | — | Role-based access | ASP.NET Authorization |
+| 14 | Swagger / OpenAPI | 🟧 | 2025-01-18 | Основна конфигурация | Описания | Swagger |
+| 15 | Logging | 🟥 | — | — | Serilog | Logging ASP.NET |
+| 16 | Unit Tests (Backend) | 🟥 | — | — | xUnit setup | Unit testing ASP.NET |
+| 17 | React Frontend – setup | 🟥 | — | — | Create React App / Vite | React basics |
+| 18 | React – API integration | 🟥 | — | — | Fetch / Axios | React + REST |
+| 19 | Authentication (JWT) – Frontend | 🟥 | — | — | Token handling | JWT frontend |
+| 20 | UI / UX | 🟥 | — | — | Основни страници | React components |
+| 21 | Integration Backend ↔ Frontend | 🟥 | — | — | Свързване | Full-stack flow |
+| 22 | Final testing & cleanup | 🟥 | — | — | Refactor | Code review |
 
 ---
 
-## 🎯 Milestones
+## 🗓️ Daily Work Log
 
-- [x] Проектна структура
-- [x] Основни CRUD операции
-- [ ] Authentication & Authorization
-- [ ] Validation & error handling
-- [ ] Unit tests
-- [ ] Финална версия за предаване
-
----
-
-## 🧪 Quality Checklist
-
-- [ ] Separation of concerns
-- [ ] DTO ≠ Entity
-- [ ] Global exception handling
-- [ ] Input validation
-- [ ] Clean commit history
-- [ ] Swagger documentation
+| Дата | Какво направих |
+|------|----------------|
+| 2025-01-10 | Създадох проекта и GitHub repo |
+| 2025-01-12 | Добавих entity модели |
+| 2025-01-15 | Започнах service layer |
 
 ---
 
-## 🧠 Идеи / Подобрения
-- Pagination & filtering
-- Soft delete
-- Logging
-- Rate limiting
+## 📚 Ресурси (общо)
+- Microsoft Docs – ASP.NET Core
+- Entity Framework Core Docs
+- FluentValidation Docs
+- JWT Authentication (MS Docs)
+- React Documentation
 
 ---
 
-## 🏁 Бележка
-Файлът се обновява **след всяка реална работна сесия**.
+## 🏁 Бележки
+- Таблицата се обновява след всяка работна сесия
+- „Ресурси за учене“ = какво трябва да прегледам преди/по време на задачата
