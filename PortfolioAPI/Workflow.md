@@ -2,31 +2,33 @@
 
 | ресурс | статус | дата | какво е направено | ресурси за четене |
 |------|--------|------|-------------------|-------------------|
-| 01.ProjectSetup | 🟩 90% | 2025-01-10 | Създаден ASP.NET Core Web API проект | ASP.NET Core Web API overview |
-| ../CreateProject | Y | 2025-01-10 | dotnet new webapi | dotnet CLI |
-| ../GitHubRepo | Y | 2025-01-10 | Repo в GitHub + initial commit | Git & GitHub basics |
-| ../SolutionStructure | Y | 2025-01-11 | Controllers / Services / Models | Clean Architecture |
-| 02.Database | 🟧 60% | 2025-01-12 | Основна DB конфигурация | EF Core |
-| ../Entities | wip | 2025-01-12 | Entity модели | EF Core Entities |
-| ../DbContext | Y | 2025-01-13 | DbContext конфигуриран | DbContext |
-| ../Migrations |  |  |  | EF Core Migrations |
-| 03.DTOs | 🟧 50% | 2025-01-14 | Част от DTO моделите | DTO pattern |
-| ../CreateDTOs | wip | 2025-01-14 | Request / Response DTO | Mapping |
+| 01.ProjectSetup | 🟩 100% | 10-12-2025 | Създаден ASP.NET Core Web API проект |  |
+| - GitHubRepo | Y | 10-12-2025 | Repo в GitHub + initial commit |  |
+| - CreateProject | Y | 10-12-2025 | Created: ASP.NET Core Web API project + Class Library |  |
+| - SolutionStructure | Y | 10-12-2025 | Controllers / Services / Models | Clean Architecture |
+| 02.Database | 🟧 80% | 09-12-2025 | Основна DB конфигурация | EF Core |
+| - Database Diagram | Y | 09-12-2025 | Db Sets Structure Created | DrawSQL used |
+| ../Common/Entities | Y | 24-12-2025 | Entity models |  |
+| ../Common/AppDbContext | Y | 27-12-2025 | DbContext written | DbContext |
+| ../Migrations | wip | N |  | EF Core Migrations |
+| 03.DTOs | 🟥 0%  | 2025-01-14 | Част от DTO моделите | DTO pattern |
+| ../CreateDTOs | wip |  | Request / Response DTO | Mapping |
 | ../AutoMapper |  |  |  | AutoMapper |
 | 04.Services | 🟧 40% | 2025-01-15 | Business logic | Service Layer |
-| ../ServiceInterfaces | Y | 2025-01-15 | Интерфейси | SOLID |
-| ../ServiceImplementations | wip | 2025-01-16 | Имплементации | Dependency Injection |
-| 05.Controllers | 🟧 40% | 2025-01-16 | CRUD endpoints | REST APIs |
-| ../CrudControllers | wip | 2025-01-16 | GET / POST / PUT / DELETE | REST |
+| ../Common/Services/BaseServices | Y | 28-12-2025 | Services for entities | SOLID; change tracking |
+| ../Common/Services | Y | 28-12-2025 | Implementation; inherit from BaseServices.cs |  |
+| 05.Controllers | 🟥 0% | - | CRUD endpoints | REST APIs |
+| ../CrudControllers | wip | - | GET / POST / PUT / DELETE | REST |
 | ../ValidationHook |  |  |  | Model validation |
-| 06.Validation | 🟥 0% |  |  | FluentValidation |
+| 06.Validation | 🟧 10% |  |  | FluentValidation |
 | ../FluentValidation |  |  |  | FluentValidation Docs |
 | ../ValidationMiddleware |  |  |  | Validation pipeline |
+| ../Common/ServiceResult | wip | 28-12-2025 | Personalized Service Result |  
 | 07.Security | 🟥 0% |  |  | Authentication |
 | ../JWTAuthentication |  |  |  | JWT ASP.NET Core |
 | ../AuthorizationRoles |  |  |  | Role-based auth |
-| 08.Swagger | 🟧 70% | 2025-01-18 | Swagger добавен | Swagger |
-| ../SwaggerConfig | Y | 2025-01-18 | OpenAPI setup | Swagger UI |
+| 08.Swagger | 🟥 0%  | | Swagger добавен | Swagger |
+| ../SwaggerConfig | Y |  | OpenAPI setup | Swagger UI |
 | ../SwaggerAuth |  |  |  | JWT in Swagger |
 | 09.Logging | 🟥 0% |  |  | Logging |
 | ../Serilog |  |  |  | Serilog |
