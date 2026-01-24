@@ -9,7 +9,7 @@ namespace API.Services;
 
 public class TokenServices
 {
-    public string CreateToken(User user)
+    public string CreateToken(AuthUser user)
     {
         Claim[] claims = new Claim[]
         {
