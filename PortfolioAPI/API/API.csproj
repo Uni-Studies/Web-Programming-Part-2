@@ -20,6 +20,7 @@
     <Folder Include="Infrastructure\RequestDTOs\Auth\" />
     <Folder Include="Infrastructure\RequestDTOs\Shared\" />
     <Folder Include="Infrastructure\ResponseDTOs\" />
+    <Folder Include="Infrastructure\ResponseDTOs\Post\" />
     <Folder Include="Infrastructure\ResponseDTOs\Shared\" />
     <Folder Include="Services\" />
   </ItemGroup>

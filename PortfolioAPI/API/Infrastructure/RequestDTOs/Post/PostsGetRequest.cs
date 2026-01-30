@@ -1,8 +1,9 @@
 using System;
+using API.Infrastructure.RequestDTOs.Shared;
 
 namespace API.Infrastructure.RequestDTOs.Post;
 
-public class PostsGetRequest
+public class PostsGetRequest : BaseGetRequest
 {
-    public PostsFilterGetRequest Filter { get; set; }
+    public PostsGetFilterRequest Filter { get; set; }
 }

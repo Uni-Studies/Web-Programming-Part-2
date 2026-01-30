@@ -2,7 +2,7 @@ using System;
 
 namespace API.Infrastructure.RequestDTOs.Post;
 
-public class PostsFilterGetRequest
+public class PostsGetFilterRequest
 {
     public int? UserId { get; set; }
     public string Location { get; set; }    
