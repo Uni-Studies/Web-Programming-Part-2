@@ -17,8 +17,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Infrastructure\" />
-    <Folder Include="Infrastructure\RequestDTOs\" />
     <Folder Include="Infrastructure\RequestDTOs\Auth\" />
     <Folder Include="Infrastructure\RequestDTOs\Shared\" />
     <Folder Include="Infrastructure\ResponseDTOs\" />

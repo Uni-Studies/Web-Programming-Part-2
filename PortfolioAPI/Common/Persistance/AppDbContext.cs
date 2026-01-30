@@ -3,6 +3,7 @@ using System.Data.Common;
 using Common.Entities;
 using Common.Entities.ManyToManyEntities;
 using Common.Entities.UserDetailsEntities;
+using Common.Entities.UserSubmissionsEntities;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -20,6 +21,7 @@ public class AppDbContext : DbContext
     public DbSet<Course> Courses { get; set; }
     public DbSet<Work> Works { get; set; }
     public DbSet<Skill> Skills { get; set; }
+    public DbSet<Hashtag> Hashtags { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -68,14 +70,20 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict);
-        #endregion
+        
+        modelBuilder.Entity<Post>()
+            .HasMany(p => p.Hashtags)
+            .WithMany(h => h.Posts);
+
+        modelBuilder.Entity<Post>()
+            .HasMany(p => p.Images)
+            .WithOne(i => i.Post)
+            .HasForeignKey(i => i.PostId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion  
 
         #region Image
-        modelBuilder.Entity<Image>()
-            .HasOne<Image>()
-            .WithMany()
-            .HasForeignKey(i => i.ItemId)
-            .OnDelete(DeleteBehavior.Restrict);
+        
         #endregion
 
         #region Social Networks
@@ -86,8 +94,8 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
         #endregion
 
-        #region UserDetailsBaseEntity
-        modelBuilder.Entity<UserDetailsBaseEntity>()
+        #region UserSubmissionBaseEntity
+        modelBuilder.Entity<UserSubmissionBaseEntity>()
             .HasMany(ud => ud.Users)
             .WithMany()
             .UsingEntity<UserSubmission>(

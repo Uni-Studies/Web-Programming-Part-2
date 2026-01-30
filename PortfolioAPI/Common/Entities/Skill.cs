@@ -9,5 +9,4 @@ public class Skill : BaseEntity
     public string Name { get; set; }
     public int Importance { get; set; }
     public List<User> Users { get; set; }
-    public List<UserDetailsBaseEntity> Sources { get; set; }
 }

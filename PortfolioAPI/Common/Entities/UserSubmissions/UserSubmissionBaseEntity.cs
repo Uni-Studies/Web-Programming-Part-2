@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Common.Entities.UserDetailsEntities;
+namespace Common.Entities.UserSubmissionsEntities;
 
-public class UserDetailsBaseEntity : BaseEntity
+public class UserSubmissionBaseEntity : BaseEntity
 {
     public virtual List<User> Users { get; set; }
     public virtual List<Skill> Skills { get; set; }
