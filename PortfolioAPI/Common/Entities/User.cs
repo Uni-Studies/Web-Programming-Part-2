@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Common.Entities.ManyToManyEntities;
 using Common.Entities.UserSubmissionsEntities;
 
 namespace Common.Entities;
@@ -19,4 +20,6 @@ public class User : BaseEntity
     public AuthUser AuthUser { get; set; }
     public List<UserSubmissionBaseEntity> UserSubmissions { get; set; } 
     public List<Skill> Skills { get; set; }
+    public List<Post> Posts { get; set; }
+    public List<Post> SavedPosts { get; set; }
 }

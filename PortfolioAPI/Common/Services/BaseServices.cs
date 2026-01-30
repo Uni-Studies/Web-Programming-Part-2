@@ -11,8 +11,8 @@ namespace Common.Services;
 public class BaseServices<T> 
     where T : BaseEntity
 {
-    private DbContext Context { get; set; } // designed to be used for a single unit-of-work
-    private DbSet<T> Items { get; set; }
+    protected DbContext Context { get; set; } // designed to be used for a single unit-of-work
+    protected DbSet<T> Items { get; set; }
 
     public BaseServices()
     {

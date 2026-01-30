@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<Skill> Skills { get; set; }
     public DbSet<Hashtag> Hashtags { get; set; }
 
+    public DbSet<SavedPost> SavedPosts { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //base.OnConfiguring(optionsBuilder);
@@ -62,6 +63,26 @@ public class AppDbContext : DbContext
             .WithOne()
             .HasForeignKey<User>(u => u.AuthUserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Posts)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.SavedPosts)
+            .WithOne(sp => sp.User)
+            .HasForeignKey(sp => sp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+     /*    modelBuilder.Entity<User>()
+            .HasMany(u => u.UserSubmissions)
+            .WithMany(u => u.Users);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Skills)
+            .WithMany(s => s.Users); */
         #endregion User
 
         #region Post
@@ -70,20 +91,19 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<Post>()
-            .HasMany(p => p.Hashtags)
-            .WithMany(h => h.Posts);
+        #endregion
 
-        modelBuilder.Entity<Post>()
-            .HasMany(p => p.Images)
-            .WithOne(i => i.Post)
-            .HasForeignKey(i => i.PostId)
-            .OnDelete(DeleteBehavior.Restrict);
-        #endregion  
+        #region SavedPost
+        modelBuilder.Entity<SavedPost>()
+            .HasKey(sp => new { sp.UserId, sp.PostId });
+        #endregion SavedPost
 
         #region Image
-        
+        modelBuilder.Entity<Image>()
+            .HasOne<Image>()
+            .WithMany()
+            .HasForeignKey(i => i.PostId)
+            .OnDelete(DeleteBehavior.Restrict);
         #endregion
 
         #region Social Networks
@@ -94,7 +114,7 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
         #endregion
 
-        #region UserSubmissionBaseEntity
+        #region UserDetailsBaseEntity
         modelBuilder.Entity<UserSubmissionBaseEntity>()
             .HasMany(ud => ud.Users)
             .WithMany()
@@ -133,7 +153,7 @@ public class AppDbContext : DbContext
                     us.HasKey(t => new { t.UserId, t.SkillId })
             );
 
-        modelBuilder.Entity<Skill>()
+        /* modelBuilder.Entity<Skill>()
             .HasMany(u => u.Sources)
             .WithMany()
             .UsingEntity<SubmissionSkill>(
@@ -149,7 +169,23 @@ public class AppDbContext : DbContext
                         .OnDelete(DeleteBehavior.Restrict),
                 us => 
                     us.HasKey(t => new { t.SubmissionId, t.SkillId })
-            );
+            ); */
+        #endregion
+
+
+        #region PostHashtag
+        modelBuilder.Entity<Hashtag>()
+            .HasMany(h => h.Posts)
+            .WithMany()
+            /* .UsingEntity<PostHashtag>(
+                ph => ph
+                        .HasOne(ph => ph.Post)
+                        .WithMany()
+                        .HasForeignKey(ph => ph.PostId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                ph => 
+                    ph.HasKey(t => new { t.PostId, t.HashtagId })
+            ) */;
         #endregion
     }
 }

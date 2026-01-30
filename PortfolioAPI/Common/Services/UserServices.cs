@@ -5,5 +5,5 @@ namespace Common.Services;
 
 public class UserServices : BaseServices<User>
 {
-
+    
 }

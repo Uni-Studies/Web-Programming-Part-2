@@ -10,9 +10,10 @@ public class Post : BaseEntity
     public string Location { get; set; }
     public string Description { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int LikesCount { get; set; } 
-    public PostPrivacyLevel PrivacyLevel { get; set; }
+    public int LikesCount { get; set; }
+    public PostPrivacyLevel PrivacyLevel { get; set;}
     public User User { get; set; }
     public List<Image> Images { get; set; }
     public List<Hashtag> Hashtags { get; set; }
+    public List<User> SavedByUsers { get; set; }
 }
