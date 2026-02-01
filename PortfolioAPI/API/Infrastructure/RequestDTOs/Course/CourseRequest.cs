@@ -1,9 +1,9 @@
 using System;
-using Common.Entities.UserDetailsEntities;
+using API.Infrastructure.RequestDTOs.Shared;
 
-namespace Common.Entities;
+namespace API.Infrastructure.RequestDTOs.Course;
 
-public class Course : UserDetailsBaseEntity
+public class CourseRequest : SubmissionRequest
 {
     public string Name { get; set; }
     public decimal Price { get; set; }

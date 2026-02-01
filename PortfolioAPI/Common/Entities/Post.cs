@@ -12,8 +12,8 @@ public class Post : BaseEntity
     public DateTime CreatedAt { get; set; }
     public int LikesCount { get; set; }
     public PostPrivacyLevel PrivacyLevel { get; set;}
-    public User User { get; set; }
-    public List<Image> Images { get; set; }
-    public List<Hashtag> Hashtags { get; set; }
-    public List<User> SavedByUsers { get; set; }
+    public virtual User User { get; set; }
+    public virtual List<Image> Images { get; set; }
+    public virtual List<Hashtag> Hashtags { get; set; }
+    public virtual List<User> SavedByUsers { get; set; }
 }

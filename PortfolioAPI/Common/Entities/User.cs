@@ -7,7 +7,8 @@ namespace Common.Entities;
 
 public class User : BaseEntity
 {
-    public int AuthUserId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public string Sex { get; set; }
     public DateOnly BirthDate { get; set; }
     public string BirthCity { get; set; }
@@ -17,9 +18,14 @@ public class User : BaseEntity
     public string Details { get; set; }
     public string ProfilePicture { get; set; }
 
-    public AuthUser AuthUser { get; set; }
-    public List<UserSubmissionBaseEntity> UserSubmissions { get; set; } 
-    public List<Skill> Skills { get; set; }
-    public List<Post> Posts { get; set; }
-    public List<Post> SavedPosts { get; set; }
+    public virtual AuthUser AuthUser { get; set; }
+    //public virtual List<UserSubmissionBaseEntity> UserSubmissions { get; set; }
+    public virtual List<Project> Projects { get; set; }
+    public virtual List<Education> Educations { get; set; }
+    public virtual List<Work> Jobs { get; set; }
+    public virtual List<Course> Courses { get; set; } 
+    public virtual List<Skill> Skills { get; set; }
+    public virtual List<Post> Posts { get; set; }
+    public virtual List<Post> SavedPosts { get; set; }
+    public virtual List<SocialNetwork> SocialNetworks { get; set; }    
 }

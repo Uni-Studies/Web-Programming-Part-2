@@ -7,5 +7,5 @@ public class Image : BaseEntity
     public int PostId { get; set; }
     public string Imagepath { get; set; }
 
-    public Post Post { get; set; }
+    public virtual Post Post { get; set; }
 }

@@ -1,10 +1,10 @@
 using System;
-using Common.Entities.UserDetailsEntities;
+using API.Infrastructure.RequestDTOs.Shared;
 using Common.Enums;
 
-namespace Common.Entities;
+namespace API.Infrastructure.RequestDTOs.Project;
 
-public class Project : UserDetailsBaseEntity
+public class ProjectsGetFilterRequest : SubmissionRequest
 {
     public string Type { get; set; }
     public string Title { get; set; }
@@ -13,6 +13,5 @@ public class Project : UserDetailsBaseEntity
     public int PagesCount { get; set; }
     public string Language { get; set; }
     public string Description { get; set; }
-    public string Link { get; set; }
-    public ProjectStatusEnum Status { get; set; }
+   
 }

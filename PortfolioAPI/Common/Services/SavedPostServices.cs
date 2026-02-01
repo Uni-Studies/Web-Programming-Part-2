@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Common.Entities;
 using Common.Entities.ManyToManyEntities;
 using Common.Persistance;
@@ -10,27 +11,11 @@ namespace Common.Services;
 
 public class SavedPostServices : BaseServices<SavedPost>
 {
-    public void SavePost(int userId, int postId)
+    public void SavePost(User user, Post post)
     {
-        bool alreadySaved = Items.Any(sp => sp.UserId == userId && sp.PostId == postId);
-
-        if (alreadySaved) return;
-
-        var user = Context.Set<User>().FirstOrDefault(u => u.Id == userId);
-        var post = Context.Set<Post>().FirstOrDefault(p => p.Id == postId);
-
-        if (user == null || post == null)
-            throw new Exception("User or Post not found.");
-
-        SavedPost savedPost = new SavedPost
-        {
-            UserId = userId,
-            PostId = postId,
-            User = user,
-            Post = post
-        };
-
-        Save(savedPost);
+        post.LikesCount += 1;
+        post.SavedByUsers.Add(user);
+        user.SavedPosts.Add(post);
     }
 
     public void UnsavePost(int userId, int postId)
@@ -38,15 +23,17 @@ public class SavedPostServices : BaseServices<SavedPost>
         var saved = Items
             .FirstOrDefault(sp => sp.UserId == userId && sp.PostId == postId);
 
+        Delete(saved);
         if (saved != null)
         {
-            Delete(saved);
+            
         }
     }
 
-    public List<Post> GetSavedPostsByUser(int userId)
+    public List<Post> GetSavedPostsByUser(int userId, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)
     {
-        var savedPosts = GetAll(sp => sp.UserId == userId).Select(sp => sp.Post).ToList();
+        Expression<Func<SavedPost, bool>> filter = sp => sp.UserId == userId;
+        var savedPosts = GetAll(filter, orderBy, sortAsc, page, pageSize).Select(sp => sp.Post).ToList();
         return savedPosts;
     }
 }

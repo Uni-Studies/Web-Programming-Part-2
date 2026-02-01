@@ -1,9 +1,10 @@
 using System;
-using Common.Entities.UserDetailsEntities;
+using System.Collections.Generic;
+using Common.Entities.UserSubmissionsEntities;
 
 namespace Common.Entities;
 
-public class Education : UserDetailsBaseEntity
+public class Education : UserSubmissionBaseEntity
 {
     public string Type { get; set; }
     public string Specialty { get; set; }

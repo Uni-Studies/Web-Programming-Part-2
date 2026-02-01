@@ -1,9 +1,10 @@
 using System;
-using Common.Entities.UserDetailsEntities;
+using Common.Entities.UserSubmissionsEntities;
+using Common.Enums;
 
 namespace Common.Entities;
 
-public class Project : UserDetailsBaseEntity
+public class Project : UserSubmissionBaseEntity
 {
     public string Type { get; set; }
     public string Title { get; set; }
@@ -13,4 +14,5 @@ public class Project : UserDetailsBaseEntity
     public string Language { get; set; }
     public string Description { get; set; }
     public string Link { get; set; }
+    
 }

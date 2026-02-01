@@ -1,7 +1,7 @@
 using System;
 using Common.Entities.UserSubmissionsEntities;
 
-namespace Common.Entities.UserDetailsEntities;
+namespace Common.Entities.ManyToManyEntities;
 
 public class UserSubmission
 {

@@ -2,7 +2,7 @@ using System;
 
 namespace Common.Enums;
 
-public enum ProjectStatusEnum
+public enum StatusEnum
 {
     Planned,
     InProgress,

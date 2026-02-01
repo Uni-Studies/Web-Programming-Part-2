@@ -7,5 +7,5 @@ public class Hashtag : BaseEntity
 {
     public string Tag { get; set; }
 
-    public List<Post> Posts { get; set; }
+    public virtual List<Post> Posts { get; set; }
 }

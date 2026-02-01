@@ -10,36 +10,28 @@ namespace Common.Services;
 
 public class PostServices : BaseServices<Post>
 {
-    public void SavePost(int userId, int postId)
+    public void SavePost(User user, Post post)
     {
-        bool alreadySaved = Context.Set<SavedPost>()
-        .Any(sp => sp.UserId == userId && sp.PostId == postId);
+        post.LikesCount += 1;
+        post.SavedByUsers ??= new List<User>();
+        user.SavedPosts ??= new List<Post>();
 
-        if (alreadySaved) return;
+        post.SavedByUsers.Add(user);
+        user.SavedPosts.Add(post);
+        Save(post);
+    }
 
-        var user = Context.Set<User>()
-            .Where(u => u.Id == userId)
-            .FirstOrDefault();
+    public void UnsavePost(User user, Post post)
+    {
+        post.LikesCount -= 1;
+        post.SavedByUsers.Remove(user);
+        user.SavedPosts.Remove(post);
+    }
 
-        var post = Items
-            .Where(p => p.Id == postId)
-            .FirstOrDefault();
-
-        if (user == null || post == null)
-        {
-            throw new Exception("User or Post not found.");
-        }
-
-        if (!post.SavedByUsers.Contains(user) && !user.SavedPosts.Contains(post))
-        {
-            post.SavedByUsers.Add(user);
-            user.SavedPosts.Add(post);
-            Context.Set<SavedPost>().Add(new SavedPost
-            {
-                UserId = userId,
-                PostId = postId
-            });
-            Context.SaveChanges();
-        }
+    public List<Post> GetSavedPostsByUser(int userId, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)
+    {
+        Expression<Func<Post, bool>> filter = p => p.SavedByUsers.Any(u => u.Id == userId);
+        var savedPosts = GetAll(filter, orderBy, sortAsc, page, pageSize).ToList();
+        return savedPosts;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -28,9 +29,7 @@ namespace API.Controllers
             }
 
             AuthUserServices service = new AuthUserServices();
-            AuthUser loggedUser = service.GetAll().FirstOrDefault(
-                u => u.Username == model.Username && u.Password == model.Password
-            );
+            var loggedUser = service.Authenticate(model.Username, model.Password);
 
             if(loggedUser == null)
             {
@@ -47,6 +46,39 @@ namespace API.Controllers
                 token = token
             }
             );
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] AuthTokenRequest model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
+            AuthUserServices authService = new AuthUserServices();
+            try
+            {
+                
+                var user = authService.Register(model.Username, model.Email, model.Password);
+
+                var authUser = authService.GetById(user.Id);
+
+                TokenServices tokenServices = new TokenServices();
+                var token = tokenServices.CreateToken(authUser);
+
+                return Ok(new
+                {
+                    token,
+                    user
+                });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(ModelState);
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using Common.Entities.UserDetailsEntities;
+
 
 namespace Common.Entities;
 
@@ -9,5 +9,5 @@ public class SocialNetwork: BaseEntity
     public string Type { get; set; }
     public string Account { get; set; }
     public string Link { get; set; }
-    public User User { get; set; }
+    public virtual User User { get; set; }
 }

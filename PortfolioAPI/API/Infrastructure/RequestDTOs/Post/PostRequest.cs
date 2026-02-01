@@ -13,6 +13,5 @@ public class PostRequest
     public DateTime CreatedAt { get; set; }
     public int LikesCount { get; set; }
     public PostPrivacyLevel PrivacyLevel { get; set; }
-    public List<Image> Images { get; set; }
-    public List<Hashtag> Hashtags { get; set; } 
+    
 }

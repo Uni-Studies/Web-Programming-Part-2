@@ -4,4 +4,6 @@ using Common.Entities;
 namespace Common.Services;
 
 public class SocialNetworkServices : BaseServices<SocialNetwork>
-{ }
+{
+
+}

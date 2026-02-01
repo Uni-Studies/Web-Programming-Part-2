@@ -1,9 +1,10 @@
 using System;
-using Common.Entities.UserDetailsEntities;
+using System.Collections.Generic;
+using Common.Entities.UserSubmissionsEntities;
 
 namespace Common.Entities;
 
-public class Course : UserDetailsBaseEntity
+public class Course : UserSubmissionBaseEntity
 {
     public string Name { get; set; }
     public decimal Price { get; set; }

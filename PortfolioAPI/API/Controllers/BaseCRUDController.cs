@@ -35,7 +35,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get([FromQuery] EGetRequest model)
+        public virtual IActionResult Get([FromQuery] EGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();
             model.Pager.Page = model.Pager.Page <= 0
@@ -45,7 +45,7 @@ namespace API.Controllers
                                         ? 10
                                         : model.Pager.PageSize;
             model.OrderBy ??= nameof(BaseEntity.Id);
-            model.OrderBy = typeof(User).GetProperty(model.OrderBy) != null
+            model.OrderBy = typeof(E).GetProperty(model.OrderBy) != null
                                 ? model.OrderBy
                                 : nameof(BaseEntity.Id);
 
@@ -85,7 +85,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ERequest model)
+        public virtual IActionResult Post([FromBody] ERequest model)
         {
             EService service = new EService();
             E item = new E();
