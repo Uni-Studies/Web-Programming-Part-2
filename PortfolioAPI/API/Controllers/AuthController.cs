@@ -7,6 +7,7 @@ using API.Services;
 using Common;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
@@ -81,6 +82,31 @@ namespace API.Controllers
                     ServiceResultExtension<List<Error>>.Failure(null, ModelState)
                 );
             }
+        }
+
+        private void PopulateEntity(AuthUser item, AuthRegistrationRequest model)
+        {
+            item.Email = model.Email ?? item.Email;
+            item.Username = model.Username ?? item.Username;
+            item.Password = model.Password ?? item.Password;
+
+        }
+
+        [Authorize]
+        [HttpPut("editAccount")]
+        public IActionResult EditAccount([FromBody] AuthRegistrationRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+                
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            AuthUserServices authUserServices = new AuthUserServices();
+            var forUpdate = authUserServices.GetById(loggedUserId);
+
+            PopulateEntity(forUpdate, model);
+            authUserServices.Save(forUpdate);
+
+            return Ok(ServiceResult<AuthUser>.Success(forUpdate));
         }
     }
 }

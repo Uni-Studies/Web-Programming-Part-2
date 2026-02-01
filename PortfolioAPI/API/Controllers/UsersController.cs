@@ -66,7 +66,7 @@ namespace API.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("addSocialNetwork")]
         public IActionResult AddSocialNetwork([FromBody] SocialNetwork socialNetwork)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);

@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidIssuer = "PortfolioAPI",
-            ValidAudience = "front-PortfolioAPIClient",
+            ValidAudience = "PortfolioAPIClient",
             IssuerSigningKey =
                         new SymmetricSecurityKey(Encoding.ASCII.GetBytes("!Password123!Password123!Password123"))
         };
