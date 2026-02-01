@@ -78,13 +78,6 @@ public class AppDbContext : DbContext
                     sp.HasKey(t => new { t.UserId, t.PostId })
             );
 
-     /*    modelBuilder.Entity<User>()
-            .HasMany(u => u.UserSubmissions)
-            .WithMany(u => u.Users);
-
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Skills)
-            .WithMany(s => s.Users); */
         #endregion User
 
         #region Post
@@ -100,13 +93,13 @@ public class AppDbContext : DbContext
             .HasOne(i => i.Post)
             .WithMany(p => p.Images)
             .HasForeignKey(i => i.PostId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
         #endregion
 
         #region Social Networks
         modelBuilder.Entity<SocialNetwork>()
             .HasOne(sn => sn.User)
-            .WithMany()
+            .WithMany(u => u.SocialNetworks)
             .HasForeignKey(sn => sn.UserId)
             .OnDelete(DeleteBehavior.Restrict);
         #endregion
@@ -136,58 +129,28 @@ public class AppDbContext : DbContext
             .WithMany(u => u.Jobs);
         #endregion
 
-        #region Skills
-        modelBuilder.Entity<Skill>()
-            .HasMany(u => u.Users)
-            .WithMany()
-            .UsingEntity<UserSkill>(
-                us => us
-                        .HasOne(us => us.User)
-                        .WithMany()
-                        .HasForeignKey(us => us.UserId)
-                        .OnDelete(DeleteBehavior.Restrict),
-                us => us    
-                        .HasOne(us => us.Skill)
-                        .WithMany()
-                        .HasForeignKey(us => us.SkillId)
-                        .OnDelete(DeleteBehavior.Restrict),
-                us => 
-                    us.HasKey(t => new { t.UserId, t.SkillId })
-            );
+        #region UserSkills
+        modelBuilder.Entity<UserSkill>()
+            .HasKey(us => new { us.UserId, us.SkillId, us.SubmissionType, us.SubmissionId });
 
-        /* modelBuilder.Entity<Skill>()
-            .HasMany(u => u.Sources)
-            .WithMany()
-            .UsingEntity<SubmissionSkill>(
-                us => us
-                        .HasOne(us => us.Submission)
-                        .WithMany()
-                        .HasForeignKey(us => us.SubmissionId)
-                        .OnDelete(DeleteBehavior.Restrict),
-                us => us    
-                        .HasOne(us => us.Skill)
-                        .WithMany()
-                        .HasForeignKey(us => us.SkillId)
-                        .OnDelete(DeleteBehavior.Restrict),
-                us => 
-                    us.HasKey(t => new { t.SubmissionId, t.SkillId })
-            ); */
+        modelBuilder.Entity<UserSkill>()
+            .HasOne(us => us.User)
+            .WithMany(u => u.UserSkills)
+            .HasForeignKey(us => us.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserSkill>()
+            .HasOne(us => us.Skill)
+            .WithMany(s => s.UserSkills)
+            .HasForeignKey(us => us.SkillId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         #endregion
-
 
         #region PostHashtag
         modelBuilder.Entity<Hashtag>()
             .HasMany(h => h.Posts)
-            .WithMany()
-            /* .UsingEntity<PostHashtag>(
-                ph => ph
-                        .HasOne(ph => ph.Post)
-                        .WithMany()
-                        .HasForeignKey(ph => ph.PostId)
-                        .OnDelete(DeleteBehavior.Restrict),
-                ph => 
-                    ph.HasKey(t => new { t.PostId, t.HashtagId })
-            ) */;
+            .WithMany(p => p.Hashtags);
         #endregion
     }
 }

@@ -16,7 +16,7 @@ public class TokenServices
             new Claim("loggedUserId", user.Id.ToString())
         };
 
-        var key =  new SymmetricSecurityKey(Encoding.ASCII.GetBytes("YourSuperSecretKeyHere"));
+        var key =  new SymmetricSecurityKey(Encoding.ASCII.GetBytes("!Password123!Password123!Password123"));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         JwtSecurityToken token = new JwtSecurityToken(

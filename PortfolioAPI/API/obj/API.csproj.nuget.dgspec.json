@@ -52,11 +52,23 @@
           "dependencies": {
             "FluentValidation": {
               "target": "Package",
-              "version": "[8.3.0, )"
+              "version": "[11.9.2, )"
+            },
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.12, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.5, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.6, )"
             }
           },
           "imports": [

@@ -24,14 +24,5 @@ public class PostValidator : AbstractValidator<PostRequest>
 
 		//RuleFor(x => x.LikesCount)
 			//.GreaterThanOrEqualTo(0).WithMessage("LikesCount cannot be negative.");
-
-		RuleFor(x => x.Images)
-			.NotNull().WithMessage("Images list must be provided (can be empty).")
-			.Must(list => list.Count <= 10).WithMessage("A post can have at most 10 images.");
-
-		RuleFor(x => x.Hashtags)
-			.NotNull().WithMessage("Hashtags list must be provided (can be empty).")
-			.Must(list => list.Count <= 20).WithMessage("A post can have at most 20 hashtags.");
-        
 	}
 }

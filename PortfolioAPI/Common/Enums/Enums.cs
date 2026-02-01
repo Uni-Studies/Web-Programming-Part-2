@@ -17,3 +17,11 @@ public enum PostPrivacyLevel
     //FriendsOnly,
     Private
 }
+
+public enum SubmissionType
+{
+    Project = 1,
+    Course = 2,
+    Work = 3,
+    Education = 4
+}
