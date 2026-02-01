@@ -12,7 +12,7 @@ public class PostServices : BaseServices<Post>
 {
     public void SavePost(User user, Post post)
     {
-        post.LikesCount += 1;
+        post.SavesCount += 1;
         post.SavedByUsers ??= new List<User>();
         user.SavedPosts ??= new List<Post>();
 
@@ -23,9 +23,10 @@ public class PostServices : BaseServices<Post>
 
     public void UnsavePost(User user, Post post)
     {
-        post.LikesCount -= 1;
+        post.SavesCount -= 1;
         post.SavedByUsers.Remove(user);
         user.SavedPosts.Remove(post);
+        Save(post);
     }
 
     public List<Post> GetSavedPostsByUser(int userId, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)

@@ -18,7 +18,7 @@ public class User : BaseEntity
     public string Details { get; set; }
     public string ProfilePicture { get; set; }
 
-    public virtual AuthUser AuthUser { get; set; }
+    //public virtual AuthUser AuthUser { get; set; }
     //public virtual List<UserSubmissionBaseEntity> UserSubmissions { get; set; }
     public virtual List<Post> Posts { get; set; }
     public virtual List<Post> SavedPosts { get; set; }

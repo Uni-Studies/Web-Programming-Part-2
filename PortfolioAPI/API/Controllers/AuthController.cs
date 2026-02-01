@@ -18,7 +18,7 @@ namespace API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost]
+        [HttpPost("createToken")]
         public IActionResult CreateToken([FromForm] AuthTokenRequest model)
         {
             if(!ModelState.IsValid)
@@ -49,7 +49,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] AuthTokenRequest model)
+        public IActionResult Register([FromForm] AuthRegistrationRequest model)
         {
             if (!ModelState.IsValid)
             {
@@ -57,27 +57,29 @@ namespace API.Controllers
                     ServiceResultExtension<List<Error>>.Failure(null, ModelState)
                 );
             }
+
             AuthUserServices authService = new AuthUserServices();
             try
             {
                 
-                var user = authService.Register(model.Username, model.Email, model.Password);
-
-                var authUser = authService.GetById(user.Id);
+                var authUser = authService.Register(model.Username, model.Email, model.Password);
+                //var authUser = authService.GetById(user.Id);
 
                 TokenServices tokenServices = new TokenServices();
                 var token = tokenServices.CreateToken(authUser);
 
                 return Ok(new
                 {
-                    token,
-                    user
+                    token = token
                 });
             }
+
             catch (Exception ex)
             {
                 ModelState.AddModelError("Global", ex.Message);
-                return BadRequest(ModelState);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
             }
         }
     }

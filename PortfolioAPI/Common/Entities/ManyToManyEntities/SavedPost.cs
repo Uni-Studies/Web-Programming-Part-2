@@ -2,12 +2,12 @@ using System;
 
 namespace Common.Entities.ManyToManyEntities;
 
-public class SavedPost : BaseEntity
+public class SavedPost
 {
     public int UserId { get; set; }
     public int PostId { get; set; }
 
-    public User User { get; set; }
-    public Post Post { get; set; }
+    public virtual User User { get; set; }
+    public virtual Post Post { get; set; }
 
 }

@@ -15,7 +15,7 @@ public class AuthUserServices : BaseServices<AuthUser>
             );
     }   
 
-    public User Register(string username, string email, string password)
+    public AuthUser Register(string username, string email, string password)
     {
 
         if (Items.Any(u => u.Username == username))
@@ -31,18 +31,30 @@ public class AuthUserServices : BaseServices<AuthUser>
             Password = password
         };
 
-        Items.Add(authUser);
-        Context.SaveChanges(); 
+        authUser.User = new User();
 
-
-        var user = new User
+        Save(authUser);
+         
+/*         var user = new User
         {
             Id = authUser.Id,
         };
 
         UserServices userService = new UserServices();
-        userService.Save(user);
+        userService.Save(user); */
 
-        return user;
+        return authUser;
+    }
+
+    public string GetUsername(int userId)
+    {
+        var user = GetById(userId);
+        return user.Username;
+    }
+
+    public string GetEmail(int userId)
+    {
+        var user = GetById(userId);
+        return user.Email;
     }
 }

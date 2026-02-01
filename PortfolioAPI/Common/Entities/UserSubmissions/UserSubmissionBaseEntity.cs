@@ -10,5 +10,5 @@ public class UserSubmissionBaseEntity : BaseEntity
     public DateOnly EndDate { get; set; }
     public StatusEnum CompletionStatus { get; set; }
 
-    public List<User> Users { get; set; }
+    public virtual List<User> Users { get; set; }
 }

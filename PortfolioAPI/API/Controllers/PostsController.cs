@@ -33,7 +33,7 @@ namespace API.Controllers
             item.Location = model.Location;
             item.Description = model.Description;
             item.CreatedAt = model.CreatedAt;
-            item.LikesCount = model.LikesCount;
+            item.SavesCount = model.LikesCount;
             item.PrivacyLevel = model.PrivacyLevel;
 
         }
@@ -123,7 +123,7 @@ namespace API.Controllers
         #region Save/Unsave Post
         [Authorize]
         [HttpGet]
-        public IActionResult SavePost([FromBody]int postId) 
+        public IActionResult SavePost([FromRoute]int postId) 
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
@@ -153,7 +153,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult UnsavePost([FromBody]int postId)
+        public IActionResult UnsavePost([FromRoute]int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
@@ -227,7 +227,7 @@ namespace API.Controllers
         #region Hashtag Management
         [Authorize]
         [HttpPost]
-        public IActionResult AddHashtag([FromBody] string tag, [FromBody] int postId)
+        public IActionResult AddHashtag([FromBody] string tag, [FromRoute] int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             HashtagServices hashtagService = new HashtagServices();
@@ -258,7 +258,7 @@ namespace API.Controllers
         
         [Authorize]
         [HttpPost]
-        public IActionResult RemoveHashtag([FromBody] string tag, [FromBody] int postId)
+        public IActionResult RemoveHashtag([FromBody] string tag, [FromRoute] int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             HashtagServices hashtagService = new HashtagServices();
@@ -291,7 +291,7 @@ namespace API.Controllers
         #region Image Management
         [Authorize]
         [HttpPost]
-        public IActionResult AddImageToPost([FromBody] Image image, [FromBody] int postId)
+        public IActionResult AddImageToPost([FromBody] Image image, [FromRoute] int postId)
         {
             PostServices postServices = new PostServices();
             var post = postServices.GetById(postId);
@@ -316,7 +316,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult RemoveImageFromPost([FromBody] Image image, [FromBody] int postId)
+        public IActionResult RemoveImageFromPost([FromBody] Image image, [FromRoute] int postId)
         {
             PostServices postServices = new PostServices();
             var post = postServices.GetById(postId);

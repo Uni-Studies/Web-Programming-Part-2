@@ -21,8 +21,8 @@ public class AppDbContext : DbContext
     public DbSet<Work> Works { get; set; }
     public DbSet<Skill> Skills { get; set; }
     public DbSet<Hashtag> Hashtags { get; set; }
-
     public DbSet<SavedPost> SavedPosts { get; set; }
+    public DbSet<UserSkill> UserSkills { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //base.OnConfiguring(optionsBuilder);
@@ -31,16 +31,20 @@ public class AppDbContext : DbContext
             .UseSqlServer(@"
                 Data Source=(localdb)\MSSQLLocalDB;
                 Database = PortfolioDb;
-                User Ud=alyavova;
+                User Id=alyavova;
                 Password=alyavova;
                 TrustServerCertificate=True;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        #region BaseEntity
-        modelBuilder.Entity<BaseEntity>()
-            .HasKey(be => be.Id);
+        #region EnumConversion
+        modelBuilder.Entity<Post>().Property(p => p.PrivacyLevel).HasConversion<string>();
+        modelBuilder.Entity<Project>().Property(s => s.CompletionStatus).HasConversion<string>();
+        modelBuilder.Entity<Education>().Property(s => s.CompletionStatus).HasConversion<string>();
+        modelBuilder.Entity<Course>().Property(s => s.CompletionStatus).HasConversion<string>();
+        modelBuilder.Entity<Work>().Property(s => s.CompletionStatus).HasConversion<string>();
+        modelBuilder.Entity<UserSkill>().Property(us => us.SubmissionType).HasConversion<string>();
         #endregion
 
         #region AuthUser
@@ -54,15 +58,15 @@ public class AppDbContext : DbContext
             });
         #endregion
 
-        #region User
-         modelBuilder.Entity<User>()
-            .HasOne(u => u.AuthUser)
-            .WithOne(a => a.User)
+        #region AuthUser
+         modelBuilder.Entity<AuthUser>()
+            .HasOne(au => au.User)
+            .WithOne()
             .HasForeignKey<User>(u => u.Id);
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.SavedPosts)
-            .WithMany()
+            .WithMany(p => p.SavedByUsers)
             .UsingEntity<SavedPost>(
                 sp => sp
                         .HasOne(sp => sp.Post)
@@ -74,11 +78,19 @@ public class AppDbContext : DbContext
                         .WithMany()
                         .HasForeignKey(sp => sp.UserId)
                         .OnDelete(DeleteBehavior.Cascade),
-                sp => 
-                    sp.HasKey(t => new { t.UserId, t.PostId })
+
+                sp => sp.HasKey(t => new { t.UserId, t.PostId })
             );
 
         #endregion User
+  
+        #region Social Networks
+        modelBuilder.Entity<SocialNetwork>()
+            .HasOne(sn => sn.User)
+            .WithMany(u => u.SocialNetworks)
+            .HasForeignKey(sn => sn.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
 
         #region Post
         modelBuilder.Entity<Post>()
@@ -96,12 +108,11 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
         #endregion
 
-        #region Social Networks
-        modelBuilder.Entity<SocialNetwork>()
-            .HasOne(sn => sn.User)
-            .WithMany(u => u.SocialNetworks)
-            .HasForeignKey(sn => sn.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+        
+        #region PostHashtag
+        modelBuilder.Entity<Hashtag>()
+            .HasMany(h => h.Posts)
+            .WithMany(p => p.Hashtags);
         #endregion
 
         #region Projects
@@ -145,12 +156,6 @@ public class AppDbContext : DbContext
             .HasForeignKey(us => us.SkillId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        #endregion
-
-        #region PostHashtag
-        modelBuilder.Entity<Hashtag>()
-            .HasMany(h => h.Posts)
-            .WithMany(p => p.Hashtags);
         #endregion
     }
 }

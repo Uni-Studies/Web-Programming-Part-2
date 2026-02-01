@@ -12,6 +12,6 @@ public class UserSkill
     public SubmissionType SubmissionType { get; set; }
     public int SubmissionId { get; set; }
 
-    public User User { get; set; }
-    public Skill Skill { get; set; }
+    public virtual User User { get; set; }
+    public virtual Skill Skill { get; set; }
 }
