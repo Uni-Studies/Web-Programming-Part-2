@@ -15,9 +15,9 @@ namespace API.Controllers.UserSubmissionsControllers
     [ApiController]
     public class ProjectsController : BaseCRUDController<Project, ProjectServices, ProjectRequest, ProjectsGetRequest, ProjectsGetResponse>
     {
-        protected override void PopulateEntity(Project item, ProjectRequest model, out string error)
+        protected override void PopulateEntity(Project item, ProjectRequest model)
         {
-            error = null; 
+
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
             item.Type = model.Type;

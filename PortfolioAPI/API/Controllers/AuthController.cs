@@ -34,7 +34,7 @@ namespace API.Controllers
 
             if(loggedUser == null)
             {
-                ModelState.AddModelError("Global", "Invalid username or password.");
+                ModelState.AddModelError("Global", "User not found.");
                 return Unauthorized(
                     ServiceResultExtension<List<Error>>.Failure(null, ModelState)
                 );
@@ -97,7 +97,9 @@ namespace API.Controllers
         public IActionResult EditAccount([FromBody] AuthRegistrationRequest model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
                 
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             AuthUserServices authUserServices = new AuthUserServices();
@@ -107,6 +109,17 @@ namespace API.Controllers
             authUserServices.Save(forUpdate);
 
             return Ok(ServiceResult<AuthUser>.Success(forUpdate));
+        }
+
+        [HttpDelete("deleteAccount")]
+        public IActionResult Delete()
+        {
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            AuthUserServices service = new AuthUserServices();
+            AuthUser forDelete = service.GetById(loggedUserId);
+            service.Delete(forDelete);
+            
+            return Ok(ServiceResult<AuthUser>.Success(forDelete));
         }
     }
 }

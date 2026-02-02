@@ -24,9 +24,8 @@ namespace API.Controllers
     [ApiController]
     public class PostsController : BaseCRUDController<Post, PostServices, PostRequest, PostsGetRequest, PostsGetResponse>
     {
-        protected override void PopulateEntity(Post item, PostRequest model, out string error)
+        protected override void PopulateEntity(Post item, PostRequest model)
         {
-            error = null; 
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
             item.UserId = loggedUserId;

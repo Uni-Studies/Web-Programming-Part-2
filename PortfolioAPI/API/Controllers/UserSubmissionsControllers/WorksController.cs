@@ -13,9 +13,8 @@ namespace API.Controllers.UserSubmissionsControllers
     [ApiController]
     public class WorksController : BaseCRUDController<Work, WorkServices, WorkRequest, WorkGetRequest, WorkGetResponse>
     {
-        protected override void PopulateEntity(Work item, WorkRequest model, out string error)
+        protected override void PopulateEntity(Work item, WorkRequest model)
         {
-            error = null; 
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
             item.Sphere = model.Sphere;

@@ -9,6 +9,8 @@ using Common.Entities;
 using Common.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -21,9 +23,9 @@ namespace API.Controllers
     where EGetRequest : BaseGetRequest, new()
     where EGetResponse : BaseGetResponse<E>, new()
     {
-        protected virtual void PopulateEntity(E item, ERequest model, out string error)
+        protected virtual void PopulateEntity(E item, ERequest model)
         {
-            error = null;
+           
         }
 
         protected virtual Expression<Func<E, bool>> GetFilter(EGetRequest model)
@@ -84,57 +86,48 @@ namespace API.Controllers
             return Ok(ServiceResult<E>.Success(item));
         }
 
+        [Authorize]
         [HttpPost]
         public virtual IActionResult Post([FromBody] ERequest model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+                
             EService service = new EService();
             E item = new E();
-            PopulateEntity(item, model, out string error);
-
-            if (!string.IsNullOrEmpty(error))
-            {
-                return BadRequest(ServiceResult<ERequest>.Failure(model,
-                    new List<Error>
-                    {
-                        new Error()
-                        {
-                            Key = "Global",
-                            Messages = new List<string>(){ error }
-                        }
-                    }));
-            }
+            PopulateEntity(item, model);
 
             service.Save(item);
             return Ok(ServiceResult<E>.Success(item));
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{id}")]
         public IActionResult Put([FromRoute] int id, [FromBody] ERequest model)
         {
+            if (!ModelState.IsValid)
+            {
+                if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+                
+            }
             EService service = new EService();
             E forUpdate = service.GetById(id);
             if(forUpdate == null)
                 throw new Exception($"{typeof(E).Name} not found");
 
-            PopulateEntity(forUpdate, model, out string error);
-            if (!string.IsNullOrEmpty(error))
-            {
-                return BadRequest(ServiceResult<ERequest>.Failure(model,
-                    new List<Error>
-                    {
-                        new Error()
-                        {
-                            Key = "Global",
-                            Messages = new List<string>(){ error }
-                        }
-                    }));
-            }
+            PopulateEntity(forUpdate, model);
             service.Save(forUpdate);
 
             return Ok(ServiceResult<E>.Success(forUpdate));
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("{id}")]
 

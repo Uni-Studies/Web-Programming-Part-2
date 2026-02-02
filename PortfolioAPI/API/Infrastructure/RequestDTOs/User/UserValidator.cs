@@ -7,10 +7,6 @@ public class UserValidator : AbstractValidator<UserRequest>
 {
     public UserValidator()
     {
-        // AuthUserId validation - must reference valid AuthUser
-        RuleFor(x => x.AuthUserId)
-            .GreaterThan(0).WithMessage("AuthUserId must be a positive integer.");
-
         // FirstName validation
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("FirstName is required.")

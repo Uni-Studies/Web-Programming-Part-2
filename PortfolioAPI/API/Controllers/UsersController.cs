@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using API.Infrastructure.RequestDTOs.SocialNetwork;
 using API.Infrastructure.RequestDTOs.User;
 using API.Infrastructure.ResponseDTOs.User;
+using API.Services;
 using Common;
 using Common.Entities;
 using Common.Entities.DTOs;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,17 +19,10 @@ namespace API.Controllers
     [ApiController]
     public class UserController : BaseCRUDController<User, UserServices, UserRequest, UsersGetRequest, UsersGetResponse>
     {
-         protected override void PopulateEntity(User item, UserRequest model, out string error)
+        protected override void PopulateEntity(User item, UserRequest model)
         {
-            error = null; 
-            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-
-            if(item.Id != loggedUserId)
-            {
-                    error = "Unauthorized";
-                    return;
-            }
-
+            item.FirstName = model.FirstName;
+            item.LastName = model.LastName;
             item.Sex = model.Sex;
             item.BirthDate = model.BirthDate;
             item.BirthCity = model.BirthCity;
@@ -38,46 +35,108 @@ namespace API.Controllers
 
         protected override Expression<Func<User, bool>> GetFilter(UsersGetRequest model)
         {
-            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            //int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            model.Filter ??= new UsersGetFilterRequest();
 
-            UserServices userServices = new UserServices();
-            FullUser user = userServices.GetFullUser(loggedUserId);
-
+            
             model.Filter ??= new UsersGetFilterRequest();
 
             return u =>
-                (u.Id == loggedUserId) &&
-                (model.Filter.UserId == null || u.Id == model.Filter.UserId) &&
-                (string.IsNullOrEmpty(model.Filter.Username) || user.Username.Contains(model.Filter.Username)) &&
-                (string.IsNullOrEmpty(model.Filter.Email) || user.Email.Contains(model.Filter.Email)) &&
+                (!model.Filter.UserId.HasValue || u.Id == model.Filter.UserId.Value) &&
                 (string.IsNullOrEmpty(model.Filter.FirstName) || u.FirstName.Contains(model.Filter.FirstName)) &&
                 (string.IsNullOrEmpty(model.Filter.LastName) || u.LastName.Contains(model.Filter.LastName));
-        }
+            }
 
         protected override void PopulateGetResponse(UsersGetRequest request, UsersGetResponse response)
         {
             response.Filter = request.Filter;
         }
 
+        [Authorize]
         [HttpPost]
         public override IActionResult Post([FromBody] UserRequest model)
         {
             return Unauthorized("Users cannot create new users. Use /auth/register instead.");
         }
 
-
-        [HttpPost("addSocialNetwork")]
-        public IActionResult AddSocialNetwork([FromBody] SocialNetwork socialNetwork)
+        [Authorize]
+        [HttpPut]
+        public IActionResult Put([FromBody] UserRequest model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+                
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-
             UserServices userServices = new UserServices();
-            FullUser user = userServices.GetFullUser(loggedUserId);
+            var forUpdate = userServices.GetById(loggedUserId);
 
-            socialNetwork.User = user.User;
+            if (forUpdate == null)
+            {
+                return NotFound(
+                    ServiceResult<UserRequest>.Failure(
+                        model,
+                        new List<Error>
+                        {
+                            new Error
+                            {
+                                Key = "Global",
+                                Messages = new List<string>
+                                {
+                                    "User not found."
+                                }
+                            }
+                        }
+                    )
+                );
+              
+            }
+            PopulateEntity(forUpdate, model);
+           
+            userServices.Save(forUpdate);
+
+            return Ok(ServiceResult<User>.Success(forUpdate));
+        }
+
+        [Authorize]
+        [HttpPost("addSocialNetwork")]
+        public IActionResult AddSocialNetwork([FromBody] SocialNetworkRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+                
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+          
+            SocialNetwork socialNetwork = new() { Type = model.Type, Account = model.Account, Link = model.Link };
+           
+            socialNetwork.UserId = loggedUserId;
+            /* socialNetwork.User = user; */
 
             SocialNetworkServices socialNetworkServices = new SocialNetworkServices();
-            socialNetworkServices.Save(socialNetwork);
+            socialNetworkServices.Save(socialNetwork); 
+
+            return Ok(ServiceResult<SocialNetwork>.Success(socialNetwork));
+        }
+
+        [Authorize]
+        [HttpPost("removeSocialNetwork/{id}")]
+        public IActionResult RemoveSocialNetwork([FromRoute]int id)
+        {             
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+
+            SocialNetworkServices socialNetworkServices = new SocialNetworkServices();
+            var socialNetwork = socialNetworkServices.GetById(id);
+
+            if (socialNetwork == null)
+                return NotFound($"Social network with id {id} not found.");
+
+            if (socialNetwork.UserId != loggedUserId)
+                return Forbid("You cannot remove another user's social network.");
+
+            socialNetworkServices.Delete(socialNetwork);
 
             return Ok(ServiceResult<SocialNetwork>.Success(socialNetwork));
         }
