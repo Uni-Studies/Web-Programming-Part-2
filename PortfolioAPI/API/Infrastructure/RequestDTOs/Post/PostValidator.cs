@@ -9,14 +9,10 @@ public class PostValidator : AbstractValidator<PostRequest>
 {
 	public PostValidator()
 	{
-		RuleFor(x => x.UserId)
-			.GreaterThan(0).WithMessage("UserId must be a positive integer.");
-
 		RuleFor(x => x.Location)
 			.MaximumLength(200).WithMessage("Location must be at most 200 characters.");
 
 		RuleFor(x => x.Description)
-			.NotEmpty().WithMessage("Description is required.")
 			.MaximumLength(2000).WithMessage("Description must be at most 2000 characters.");
 
 		RuleFor(x => x.CreatedAt)

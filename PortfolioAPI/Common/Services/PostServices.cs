@@ -12,28 +12,33 @@ public class PostServices : BaseServices<Post>
 {
     public void SavePost(User user, Post post)
     {
-        post.SavesCount += 1;
-        post.SavedByUsers ??= new List<User>();
-        user.SavedPosts ??= new List<Post>();
+        Context.Attach(user);
+        Context.Attach(post);
 
-        post.SavedByUsers.Add(user);
-        user.SavedPosts.Add(post);
+         if (user.SavedPosts.Contains(post))
+        {
+            throw new ArgumentException("Post has already been saved!");
+        }
         
-        Context.SaveChanges();
+        user.SavedPosts.Add(post);
+        post.SavesCount++;
+
+        Context.SaveChanges();   
     }
 
     public void UnsavePost(User user, Post post)
     {
-        post.SavesCount -= 1;
-        post.SavedByUsers.Remove(user);
+        Context.Attach(user);
+        Context.Attach(post);
+
         user.SavedPosts.Remove(post);
+        post.SavesCount--;
+
         Context.SaveChanges();
     }
 
-    public List<Post> GetSavedPostsByUser(int userId, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)
+    public List<Post> GetSavedPostsByUser(User user, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)
     {
-        Expression<Func<Post, bool>> filter = p => p.SavedByUsers.Any(u => u.Id == userId);
-        var savedPosts = GetAll(filter, orderBy, sortAsc, page, pageSize).ToList();
-        return savedPosts;
+        return user.SavedPosts; 
     }
 }

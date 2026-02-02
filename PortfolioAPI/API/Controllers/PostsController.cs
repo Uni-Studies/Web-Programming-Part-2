@@ -7,6 +7,7 @@ using API.Infrastructure.RequestDTOs.Post;
 using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Post;
 using API.Infrastructure.ResponseDTOs.Shared;
+using API.Services;
 using Azure.Core.Pipeline;
 using Common;
 using Common.Entities;
@@ -32,9 +33,8 @@ namespace API.Controllers
             item.Location = model.Location;
             item.Description = model.Description;
             item.CreatedAt = model.CreatedAt;
-            item.SavesCount = model.LikesCount;
+            item.SavesCount = model.SavesCount;
             item.PrivacyLevel = model.PrivacyLevel;
-
         }
 
         protected override Expression<Func<Post, bool>> GetFilter(PostsGetRequest model)
@@ -50,7 +50,7 @@ namespace API.Controllers
                     (string.IsNullOrEmpty(model.Filter.DescriptionContains) || p.Description.Contains(model.Filter.DescriptionContains)) &&
                     (model.Filter.CreatedAfter == null || p.CreatedAt >= model.Filter.CreatedAfter) &&
                     (model.Filter.CreatedBefore == null || p.CreatedAt <= model.Filter.CreatedBefore) &&
-                    (model.Filter.Hashtag == null || p.Hashtags.Any(h => h.Tag == model.Filter.Hashtag)) &&
+                    //(model.Filter.Hashtag == null || p.Hashtags.Any(h => h.Tag == model.Filter.Hashtag)) &&
                     (model.Filter.UserId == null || p.UserId == model.Filter.UserId) &&
                     (p.PrivacyLevel == PostPrivacyLevel.Public);
         }
@@ -65,7 +65,7 @@ namespace API.Controllers
                     (string.IsNullOrEmpty(model.Filter.DescriptionContains) || p.Description.Contains(model.Filter.DescriptionContains)) &&
                     (model.Filter.CreatedAfter == null || p.CreatedAt >= model.Filter.CreatedAfter) &&
                     (model.Filter.CreatedBefore == null || p.CreatedAt <= model.Filter.CreatedBefore) &&
-                    (model.Filter.Hashtag == null || p.Hashtags.Any(h => h.Tag == model.Filter.Hashtag)) &&
+                    //(model.Filter.Hashtag == null || p.Hashtags.Any(h => h.Tag == model.Filter.Hashtag)) &&
                     (p.PrivacyLevel == PostPrivacyLevel.Public);
 
         }
@@ -75,7 +75,7 @@ namespace API.Controllers
             response.Filter = request.Filter;
         }
 
-        [HttpGet]
+        [HttpGet("getPublicPosts")]
         public IActionResult GetPublicPosts([FromQuery] PostsGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();
@@ -121,7 +121,8 @@ namespace API.Controllers
 
         #region Save/Unsave Post
         [Authorize]
-        [HttpGet]
+        [HttpPost("savePost/{postId}")]
+
         public IActionResult SavePost([FromRoute]int postId) 
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
@@ -144,14 +145,23 @@ namespace API.Controllers
                     }));
             }
 
-            postServices.SavePost(user, post); 
-            userServices.Save(user);
+            try
+            {
+                postServices.SavePost(user, post); 
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
             
             return Ok(ServiceResult<Post>.Success(post));
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost("unsavePost/{postId}")]
         public IActionResult UnsavePost([FromRoute]int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
@@ -174,14 +184,13 @@ namespace API.Controllers
                     }));
             }
 
-            postServices.UnsavePost(user, post); 
-            userServices.Save(user);
+            postServices.UnsavePost(user, post);
             
             return Ok(ServiceResult<Post>.Success(post));
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("getSavedPosts")]
         public IActionResult GetSavedPosts([FromQuery] PostsGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();
@@ -197,9 +206,11 @@ namespace API.Controllers
                                 : nameof(BaseEntity.Id);
                                 
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
 
             PostServices service = new PostServices();
-            var savedPosts = service.GetSavedPostsByUser(loggedUserId);
+            var savedPosts = service.GetSavedPostsByUser(user);
 
             Expression<Func<Post, bool>> filter = GetFilter(model);
 
@@ -225,7 +236,7 @@ namespace API.Controllers
 
         #region Hashtag Management
         [Authorize]
-        [HttpPost]
+        [HttpPost("addHashtag")]
         public IActionResult AddHashtag([FromBody] string tag, [FromRoute] int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
@@ -256,7 +267,7 @@ namespace API.Controllers
         }
         
         [Authorize]
-        [HttpPost]
+        [HttpPost("removeHashtag")]
         public IActionResult RemoveHashtag([FromBody] string tag, [FromRoute] int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
@@ -289,7 +300,7 @@ namespace API.Controllers
 
         #region Image Management
         [Authorize]
-        [HttpPost]
+        [HttpPost("addImageToPost")]
         public IActionResult AddImageToPost([FromBody] Image image, [FromRoute] int postId)
         {
             PostServices postServices = new PostServices();
@@ -314,7 +325,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("removeImageFromPost")]
         public IActionResult RemoveImageFromPost([FromBody] Image image, [FromRoute] int postId)
         {
             PostServices postServices = new PostServices();
