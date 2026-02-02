@@ -1,9 +1,13 @@
 using System;
 using System.Linq.Expressions;
+using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.RequestDTOs.Work;
+using API.Infrastructure.ResponseDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Work;
+using Common;
 using Common.Entities;
 using Common.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,8 +31,6 @@ namespace API.Controllers.UserSubmissionsControllers
 
         protected override Expression<Func<Work, bool>> GetFilter(WorkGetRequest model)
         {
-            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-
             model.Filter ??= new WorkGetFilterRequest();    
             return 
                 p => 
@@ -39,14 +41,79 @@ namespace API.Controllers.UserSubmissionsControllers
                 
                     (!model.Filter.SalaryFrom.HasValue || p.Salary >= model.Filter.SalaryFrom.Value) &&
                     (!model.Filter.SalaryTo.HasValue || p.Salary <= model.Filter.SalaryTo.Value);
-        
-                    /* (!model.Filter.CompletionStatus.HasValue ||
-                    (p.CompletionStatus == model.Filter.CompletionStatus); */
-        } 
+        }
+
+        protected override Expression<Func<Work, bool>> GetPersonalFilter(WorkGetRequest model)
+        {
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+
+            model.Filter ??= new WorkGetFilterRequest();
+            return
+                w =>
+                    (w.UserId == loggedUserId) &&
+                    (string.IsNullOrEmpty(model.Filter.Sphere) || w.Sphere.Contains(model.Filter.Sphere)) &&
+                    (string.IsNullOrEmpty(model.Filter.Occupation) || w.Occupation.Contains(model.Filter.Occupation)) &&
+                    (string.IsNullOrEmpty(model.Filter.Location) || w.Location.Contains(model.Filter.Location)) &&
+                    (string.IsNullOrEmpty(model.Filter.Company) || w.Company.Contains(model.Filter.Company)) &&
+                    (!model.Filter.SalaryFrom.HasValue || w.Salary >= model.Filter.SalaryFrom.Value) &&
+                    (!model.Filter.SalaryTo.HasValue || w.Salary <= model.Filter.SalaryTo.Value);
+        }
 
         protected override void PopulateGetResponse(WorkGetRequest request, WorkGetResponse response)
         {
             response.Filter = request.Filter;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetPersonalOne()
+        {
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            WorkServices service = new WorkServices();
+            var item = service.GetById(loggedUserId);
+            return Ok(ServiceResult<Work>.Success(item));
+        }
+
+        [Authorize]
+        [HttpGet]
+        public virtual IActionResult GetPersonalJobs([FromQuery] WorkGetRequest model)
+        {
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            model.OrderBy = typeof(Work).GetProperty(model.OrderBy) != null
+                                ? model.OrderBy
+                                : nameof(BaseEntity.Id);
+
+            WorkServices service = new WorkServices();
+
+            Expression<Func<Work, bool>> filter = GetPersonalFilter(model);
+
+            var response = new WorkGetResponse();
+
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
+            response.OrderBy = model.OrderBy;
+            response.SortAscending = model.SortAscending;
+
+            PopulateGetResponse(model, response);
+
+            response.Pager.Count = service.Count(filter);
+            response.Items = service.GetAll(
+                filter,
+                model.OrderBy,
+                model.SortAscending,
+                model.Pager.Page,
+                model.Pager.PageSize
+            );
+
+            return Ok(ServiceResult<WorkGetResponse>.Success(response));
         }
     }
 }

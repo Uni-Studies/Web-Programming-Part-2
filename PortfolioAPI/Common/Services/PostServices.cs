@@ -18,7 +18,8 @@ public class PostServices : BaseServices<Post>
 
         post.SavedByUsers.Add(user);
         user.SavedPosts.Add(post);
-        Save(post);
+        
+        Context.SaveChanges();
     }
 
     public void UnsavePost(User user, Post post)
@@ -26,7 +27,7 @@ public class PostServices : BaseServices<Post>
         post.SavesCount -= 1;
         post.SavedByUsers.Remove(user);
         user.SavedPosts.Remove(post);
-        Save(post);
+        Context.SaveChanges();
     }
 
     public List<Post> GetSavedPostsByUser(int userId, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)

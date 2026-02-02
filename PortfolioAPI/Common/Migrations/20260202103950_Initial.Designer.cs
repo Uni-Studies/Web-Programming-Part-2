@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Common.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260201130521_Initial")]
+    [Migration("20260202103950_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -98,7 +98,12 @@ namespace Common.Migrations
                     b.Property<string>("Tutor")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Courses");
                 });
@@ -133,7 +138,12 @@ namespace Common.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Educations");
                 });
@@ -287,7 +297,12 @@ namespace Common.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Projects");
                 });
@@ -411,39 +426,14 @@ namespace Common.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Works");
-                });
-
-            modelBuilder.Entity("CourseUser", b =>
-                {
-                    b.Property<int>("CoursesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CoursesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("CourseUser");
-                });
-
-            modelBuilder.Entity("EducationUser", b =>
-                {
-                    b.Property<int>("EducationsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EducationsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("EducationUser");
                 });
 
             modelBuilder.Entity("HashtagPost", b =>
@@ -461,34 +451,26 @@ namespace Common.Migrations
                     b.ToTable("HashtagPost");
                 });
 
-            modelBuilder.Entity("ProjectUser", b =>
+            modelBuilder.Entity("Common.Entities.Course", b =>
                 {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("int");
+                    b.HasOne("Common.Entities.User", "User")
+                        .WithMany("Courses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("ProjectUser");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserWork", b =>
+            modelBuilder.Entity("Common.Entities.Education", b =>
                 {
-                    b.Property<int>("JobsId")
-                        .HasColumnType("int");
+                    b.HasOne("Common.Entities.User", "User")
+                        .WithMany("Educations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("JobsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("UserWork");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Common.Entities.Image", b =>
@@ -551,6 +533,17 @@ namespace Common.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Common.Entities.Project", b =>
+                {
+                    b.HasOne("Common.Entities.User", "User")
+                        .WithMany("Projects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Common.Entities.SocialNetwork", b =>
                 {
                     b.HasOne("Common.Entities.User", "User")
@@ -564,43 +557,22 @@ namespace Common.Migrations
 
             modelBuilder.Entity("Common.Entities.User", b =>
                 {
-                    b.HasOne("Common.Entities.AuthUser", "AuthUser")
+                    b.HasOne("Common.Entities.AuthUser", null)
                         .WithOne("User")
                         .HasForeignKey("Common.Entities.User", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AuthUser");
                 });
 
-            modelBuilder.Entity("CourseUser", b =>
+            modelBuilder.Entity("Common.Entities.Work", b =>
                 {
-                    b.HasOne("Common.Entities.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesId")
+                    b.HasOne("Common.Entities.User", "User")
+                        .WithMany("Jobs")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Common.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EducationUser", b =>
-                {
-                    b.HasOne("Common.Entities.Education", null)
-                        .WithMany()
-                        .HasForeignKey("EducationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Common.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HashtagPost", b =>
@@ -614,36 +586,6 @@ namespace Common.Migrations
                     b.HasOne("Common.Entities.Post", null)
                         .WithMany()
                         .HasForeignKey("PostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.HasOne("Common.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Common.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UserWork", b =>
-                {
-                    b.HasOne("Common.Entities.Work", null)
-                        .WithMany()
-                        .HasForeignKey("JobsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Common.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -665,7 +607,15 @@ namespace Common.Migrations
 
             modelBuilder.Entity("Common.Entities.User", b =>
                 {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Educations");
+
+                    b.Navigation("Jobs");
+
                     b.Navigation("Posts");
+
+                    b.Navigation("Projects");
 
                     b.Navigation("SocialNetworks");
 

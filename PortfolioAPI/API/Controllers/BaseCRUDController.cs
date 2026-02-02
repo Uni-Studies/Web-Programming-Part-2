@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using API.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -32,11 +33,17 @@ namespace API.Controllers
         {
             return null;
         }
+
+        protected virtual Expression<Func<E, bool>> GetPersonalFilter(EGetRequest model)
+        {
+           return null;
+        }
         protected virtual void PopulateGetResponse(EGetRequest request, EGetResponse response)
         {
+            
         }
 
-        [HttpGet]
+        [HttpGet("getAll")]
         public virtual IActionResult Get([FromQuery] EGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();
@@ -82,8 +89,20 @@ namespace API.Controllers
         public IActionResult Get([FromRoute] int id)
         {
             EService service = new EService();
-            var item = service.GetById(id);
-            return Ok(ServiceResult<E>.Success(item));
+            try
+            {
+                var item = service.GetById(id);
+                if(item == null)
+                    throw new Exception($"{typeof(E).Name} not found");
+                return Ok(ServiceResult<E>.Success(item));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
         }
 
         [Authorize]
@@ -117,14 +136,25 @@ namespace API.Controllers
                 
             }
             EService service = new EService();
-            E forUpdate = service.GetById(id);
-            if(forUpdate == null)
-                throw new Exception($"{typeof(E).Name} not found");
+            try
+            {
+                E forUpdate = service.GetById(id);
+                if(forUpdate == null)
+                    throw new Exception($"{typeof(E).Name} not found");
 
-            PopulateEntity(forUpdate, model);
-            service.Save(forUpdate);
+                PopulateEntity(forUpdate, model);
+                service.Save(forUpdate);
+                return Ok(ServiceResult<E>.Success(forUpdate));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
 
-            return Ok(ServiceResult<E>.Success(forUpdate));
+           
         }
 
         [Authorize]
@@ -134,13 +164,24 @@ namespace API.Controllers
         public IActionResult Delete([FromRoute] int id)
         {
             EService service = new EService();
-            E forDelete = service.GetById(id);
-            if(forDelete == null)
-                throw new Exception($"{typeof(E).Name} not found");
+            try
+            {
+                E forDelete = service.GetById(id);
+                if(forDelete == null)
+                    throw new Exception($"{typeof(E).Name} not found");
 
-            service.Delete(forDelete);
+                service.Delete(forDelete);
+                
+                return Ok(ServiceResult<E>.Success(forDelete));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
             
-            return Ok(ServiceResult<E>.Success(forDelete));
         }
     }
 }

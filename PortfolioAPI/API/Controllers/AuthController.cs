@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using API.Infrastructure.RequestDTOs.Auth;
 using API.Services;
 using Common;
@@ -19,6 +20,23 @@ namespace API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        
+        private void PopulateEntity(AuthUser item, AuthRegistrationRequest model, out string error)
+        {
+            error = null;
+            AuthUserServices authUserServices = new AuthUserServices();
+            
+            if(authUserServices.EmailExists(model.Email, item.Id) || authUserServices.UsernameExists(model.Username, item.Id))
+            {
+                error = "User with such credentials exists";
+                return;
+            }
+            item.Email = model.Email ?? item.Email;
+            item.Username = model.Username ?? item.Username;
+            item.Password = model.Password ?? item.Password;
+
+        }
+
         [HttpPost("createToken")]
         public IActionResult CreateToken([FromForm] AuthTokenRequest model)
         {
@@ -52,7 +70,7 @@ namespace API.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromForm] AuthRegistrationRequest model)
         {
-            if (!ModelState.IsValid)
+             if (!ModelState.IsValid)
             {
                 return BadRequest(
                     ServiceResultExtension<List<Error>>.Failure(null, ModelState)
@@ -84,14 +102,6 @@ namespace API.Controllers
             }
         }
 
-        private void PopulateEntity(AuthUser item, AuthRegistrationRequest model)
-        {
-            item.Email = model.Email ?? item.Email;
-            item.Username = model.Username ?? item.Username;
-            item.Password = model.Password ?? item.Password;
-
-        }
-
         [Authorize]
         [HttpPut("editAccount")]
         public IActionResult EditAccount([FromBody] AuthRegistrationRequest model)
@@ -105,7 +115,18 @@ namespace API.Controllers
             AuthUserServices authUserServices = new AuthUserServices();
             var forUpdate = authUserServices.GetById(loggedUserId);
 
-            PopulateEntity(forUpdate, model);
+            PopulateEntity(forUpdate, model, out string error);
+            if(!string.IsNullOrEmpty(error)){
+                 return BadRequest(ServiceResult<AuthRegistrationRequest>.Failure(model,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { error }
+                        }
+                    }));
+            }
             authUserServices.Save(forUpdate);
 
             return Ok(ServiceResult<AuthUser>.Success(forUpdate));

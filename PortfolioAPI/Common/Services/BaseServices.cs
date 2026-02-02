@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Common.Entities;
+using Common.Entities.UserSubmissionsEntities;
 using Common.Persistance;
 using Microsoft.EntityFrameworkCore;
 

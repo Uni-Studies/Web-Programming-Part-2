@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using Common.Entities;
+using Microsoft.Identity.Client;
 
 namespace Common.Services;
 
@@ -41,11 +43,11 @@ public class AuthUserServices : BaseServices<AuthUser>
         };
 
         UserServices userService = new UserServices();
-        userService.Save(user); */
+        userService.Save(user);  */
 
         return authUser;
     }
-
+ 
     public string GetUsername(int userId)
     {
         var user = GetById(userId);
@@ -56,5 +58,15 @@ public class AuthUserServices : BaseServices<AuthUser>
     {
         var user = GetById(userId);
         return user.Email;
+    }
+
+    public bool EmailExists(string email, int userId)
+    {
+        return Items.Any(x => x.Email == email && x.Id != userId);
+    }
+
+    public bool UsernameExists(string username, int userId)
+    {
+        return Items.Any(x => x.Username == username && x.Id != userId);
     }
 }

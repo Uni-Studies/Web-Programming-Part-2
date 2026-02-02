@@ -27,47 +27,6 @@ namespace Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Courses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Tutor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Place = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HasCertificate = table.Column<bool>(type: "bit", nullable: false),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Courses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Educations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    School = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Educations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Hashtags",
                 columns: table => new
                 {
@@ -78,29 +37,6 @@ namespace Common.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hashtags", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Topic = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Mentor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PagesCount = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Link = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -115,26 +51,6 @@ namespace Common.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Skills", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Works",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Sphere = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Occupation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Company = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Works", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -165,48 +81,55 @@ namespace Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourseUser",
+                name: "Courses",
                 columns: table => new
                 {
-                    CoursesId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Tutor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Place = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HasCertificate = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseUser", x => new { x.CoursesId, x.UsersId });
+                    table.PrimaryKey("PK_Courses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourseUser_Courses_CoursesId",
-                        column: x => x.CoursesId,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CourseUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Courses_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EducationUser",
+                name: "Educations",
                 columns: table => new
                 {
-                    EducationsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    School = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EducationUser", x => new { x.EducationsId, x.UsersId });
+                    table.PrimaryKey("PK_Educations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EducationUser_Educations_EducationsId",
-                        column: x => x.EducationsId,
-                        principalTable: "Educations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EducationUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Educations_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -237,24 +160,30 @@ namespace Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectUser",
+                name: "Projects",
                 columns: table => new
                 {
-                    ProjectsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Topic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Mentor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PagesCount = table.Column<int>(type: "int", nullable: false),
+                    Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Link = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectUser", x => new { x.ProjectsId, x.UsersId });
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectUser_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProjectUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Projects_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -309,25 +238,28 @@ namespace Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserWork",
+                name: "Works",
                 columns: table => new
                 {
-                    JobsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Sphere = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Occupation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Company = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    CompletionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserWork", x => new { x.JobsId, x.UsersId });
+                    table.PrimaryKey("PK_Works", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserWork_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Works_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserWork_Works_JobsId",
-                        column: x => x.JobsId,
-                        principalTable: "Works",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -406,14 +338,14 @@ namespace Common.Migrations
                 values: new object[] { 1, "stu2401321005@uni-plovdiv.bg", "adminpass", "admin" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseUser_UsersId",
-                table: "CourseUser",
-                column: "UsersId");
+                name: "IX_Courses_UserId",
+                table: "Courses",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EducationUser_UsersId",
-                table: "EducationUser",
-                column: "UsersId");
+                name: "IX_Educations_UserId",
+                table: "Educations",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HashtagPost_PostsId",
@@ -431,9 +363,9 @@ namespace Common.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectUser_UsersId",
-                table: "ProjectUser",
-                column: "UsersId");
+                name: "IX_Projects_UserId",
+                table: "Projects",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SavedPosts_PostId",
@@ -451,19 +383,19 @@ namespace Common.Migrations
                 column: "SkillId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserWork_UsersId",
-                table: "UserWork",
-                column: "UsersId");
+                name: "IX_Works_UserId",
+                table: "Works",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CourseUser");
+                name: "Courses");
 
             migrationBuilder.DropTable(
-                name: "EducationUser");
+                name: "Educations");
 
             migrationBuilder.DropTable(
                 name: "HashtagPost");
@@ -472,7 +404,7 @@ namespace Common.Migrations
                 name: "Images");
 
             migrationBuilder.DropTable(
-                name: "ProjectUser");
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "SavedPosts");
@@ -484,28 +416,16 @@ namespace Common.Migrations
                 name: "UserSkills");
 
             migrationBuilder.DropTable(
-                name: "UserWork");
-
-            migrationBuilder.DropTable(
-                name: "Courses");
-
-            migrationBuilder.DropTable(
-                name: "Educations");
+                name: "Works");
 
             migrationBuilder.DropTable(
                 name: "Hashtags");
-
-            migrationBuilder.DropTable(
-                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Skills");
-
-            migrationBuilder.DropTable(
-                name: "Works");
 
             migrationBuilder.DropTable(
                 name: "Users");

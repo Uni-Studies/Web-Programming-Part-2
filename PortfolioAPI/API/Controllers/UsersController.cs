@@ -72,7 +72,7 @@ namespace API.Controllers
             UserServices userServices = new UserServices();
             var forUpdate = userServices.GetById(loggedUserId);
 
-            if (forUpdate == null)
+            if (forUpdate == null) //admin validation
             {
                 return NotFound(
                     ServiceResult<UserRequest>.Failure(

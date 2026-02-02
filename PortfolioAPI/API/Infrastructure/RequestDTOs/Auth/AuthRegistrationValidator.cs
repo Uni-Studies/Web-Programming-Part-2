@@ -1,4 +1,5 @@
 using System;
+using Common.Services;
 using FluentValidation;
 
 namespace API.Infrastructure.RequestDTOs.Auth;
@@ -7,7 +8,7 @@ public class AuthRegistrationValidator : AbstractValidator<AuthRegistrationReque
 {
     public AuthRegistrationValidator()
     {
-         RuleFor(x => x.Username)
+        RuleFor(x => x.Username)
             .NotEmpty().WithMessage("Username is required.")
             .MinimumLength(3).WithMessage("Username must be at least 3 characters long.");
 

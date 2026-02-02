@@ -117,26 +117,26 @@ public class AppDbContext : DbContext
 
         #region Projects
         modelBuilder.Entity<Project>()
-            .HasMany(p => p.Users)
+            .HasOne(p => p.User)
             .WithMany(u => u.Projects);
 
         #endregion
 
         #region Educations
         modelBuilder.Entity<Education>()
-            .HasMany(e => e.Users)
+            .HasOne(e => e.User)
             .WithMany(u => u.Educations);
         #endregion
 
         #region Courses
         modelBuilder.Entity<Course>()
-            .HasMany(c => c.Users)
+            .HasOne(c => c.User)
             .WithMany(u => u.Courses);
         #endregion
 
         #region Works/Jobs
         modelBuilder.Entity<Work>()
-            .HasMany(w => w.Users)
+            .HasOne(w => w.User)
             .WithMany(u => u.Jobs);
         #endregion
 

@@ -8,9 +8,6 @@ public class WorkValidator : AbstractValidator<WorkRequest>
 {
 	public WorkValidator()
 	{
-        RuleFor(x => x.UserId)
-			.GreaterThan(0).WithMessage("UserId must be a positive integer.");
-
 		RuleFor(x => x.StartDate)
 			.LessThanOrEqualTo(x => x.EndDate).WithMessage("StartDate must be on or before EndDate.");
 
