@@ -10,4 +10,5 @@ public class PostsGetFilterRequest
     public DateTime? CreatedAt { get; set; }
     public DateTime? CreatedBefore { get; set; }
     public DateTime? CreatedAfter { get; set; }
+    public string Hashtag { get; set; }
 }

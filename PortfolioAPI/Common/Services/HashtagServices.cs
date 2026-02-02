@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Common.Entities;
 
@@ -11,23 +12,39 @@ public class HashtagServices : BaseServices<Hashtag>
         return Items.FirstOrDefault(h => h.Tag == tag);
     }
 
-    public void AddTagToPost(Hashtag hashtag, Post post)
+    public bool PostHasTag(Post post, string tag)
     {
-        if (!hashtag.Posts.Any(p => p.Id == post.Id) && !post.Hashtags.Any(h => h.Id == hashtag.Id))
-        {
-            hashtag.Posts.Add(post);
-            post.Hashtags.Add(hashtag);
-            Context.SaveChanges();
-        }
+        Context.Attach(post);
+        return post.Hashtags.Any(t => t.Tag.Equals(tag));
+    }
+    public void AddTagToPost(string tag, Post post)
+    {
+        Context.Attach(post);
+
+        var hashtag = GetByTag(tag);
+        post.Hashtags.Add(hashtag);
+        
+        Context.SaveChanges();
     }
 
-    public void RemoveTagFromPost(Hashtag hashtag, Post post)
+    public void RemoveTagFromPost(string tag, Post post)
     {
-        if (hashtag.Posts.Any(p => p.Id == post.Id) && post.Hashtags.Any(h => h.Id == hashtag.Id))
-        {
-            hashtag.Posts.Remove(post);
-            post.Hashtags.Remove(hashtag);
-            Context.SaveChanges();
-        }
+        Context.Attach(post);
+
+        var hashtag = GetByTag(tag);
+        post.Hashtags.Remove(hashtag);
+        
+        Context.SaveChanges();
+    }
+
+    public List<Post> SearchPostsByHashtag(string hashtag)
+    {
+        var tag = GetByTag(hashtag);
+        Context.Attach(tag);
+
+        if(tag is null)
+            throw new Exception("Tag is not found!");
+        
+        return tag.Posts; 
     }
 }

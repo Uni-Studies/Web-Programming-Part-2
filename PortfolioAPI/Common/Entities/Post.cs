@@ -15,10 +15,8 @@ public class Post : BaseEntity
     public PostPrivacyLevel PrivacyLevel { get; set;}
     public virtual User User { get; set; }
 
-    [JsonIgnore]
     public virtual List<Image> Images { get; set; }
 
-    [JsonIgnore]
     public virtual List<Hashtag> Hashtags { get; set; }
     
     [JsonIgnore]

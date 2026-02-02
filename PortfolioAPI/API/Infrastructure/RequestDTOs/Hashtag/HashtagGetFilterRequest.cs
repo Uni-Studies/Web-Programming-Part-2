@@ -1,0 +1,8 @@
+using System;
+
+namespace API.Infrastructure.RequestDTOs.Hashtag;
+
+public class HashtagGetFilterRequest : HashtagRequest
+{
+
+}

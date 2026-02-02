@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
+using API.Infrastructure.RequestDTOs.Hashtag;
 using API.Infrastructure.RequestDTOs.Post;
 using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Post;
@@ -232,24 +233,32 @@ namespace API.Controllers
         
         #endregion
 
-
-
         #region Hashtag Management
         [Authorize]
-        [HttpPost("addHashtag")]
-        public IActionResult AddHashtag([FromBody] string tag, [FromRoute] int postId)
+        [HttpPost("addHashtag/{postId}")]
+        public IActionResult AddHashtag([FromRoute] int postId, [FromBody] HashtagRequest model)
         {
-            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-            HashtagServices hashtagService = new HashtagServices();
-            var hashtag = hashtagService.GetByTag(tag);
-            if(hashtag == null)
+            if (string.IsNullOrWhiteSpace(model.Tag))
             {
-                hashtagService.Save(new Hashtag { Tag = tag });
-                hashtag = hashtagService.GetByTag(tag);
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Tag",
+                            Messages = new List<string> { "Tag is required" }
+                        }
+                    }));
             }
+
+            model.Tag = model.Tag.Trim().ToLower();
+            
+            HashtagServices hashtagService = new HashtagServices();
+            var hashtag = hashtagService.GetByTag(model.Tag);
 
             PostServices postService = new PostServices();
             var post = postService.GetById(postId);
+
             if(post == null)
             {
                 return BadRequest(ServiceResult<Post>.Failure(null,
@@ -262,23 +271,52 @@ namespace API.Controllers
                         }
                     }));
             }
-            hashtagService.AddTagToPost(hashtag, post);
+
+            if (hashtag is not null && hashtagService.PostHasTag(post, hashtag.Tag))
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "Post already has this hashtag." }
+                        }
+                    }));
+            }
+
+            if(hashtag is null)
+            {
+                hashtag = new Hashtag() { Tag = model.Tag };
+                hashtagService.Save(hashtag);
+            }
+            
+            hashtagService.AddTagToPost(hashtag.Tag, post);
             return Ok(ServiceResult<Post>.Success(post));
         }
         
         [Authorize]
-        [HttpPost("removeHashtag")]
-        public IActionResult RemoveHashtag([FromBody] string tag, [FromRoute] int postId)
+        [HttpPost("removeHashtag/{postId}")]
+        public IActionResult RemoveHashtag([FromBody] HashtagRequest model, [FromRoute] int postId)
         {
-            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-            HashtagServices hashtagService = new HashtagServices();
-            var hashtag = hashtagService.GetByTag(tag);
-            if(hashtag == null)
+            if (string.IsNullOrWhiteSpace(model.Tag))
             {
-                hashtagService.Save(new Hashtag { Tag = tag });
-                hashtag = hashtagService.GetByTag(tag);
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Tag",
+                            Messages = new List<string> { "Tag is required" }
+                        }
+                    }));
             }
 
+            model.Tag = model.Tag.Trim().ToLower();
+            HashtagServices hashtagService = new HashtagServices();
+            
+            var hashtag = hashtagService.GetByTag(model.Tag);
+            
             PostServices postService = new PostServices();
             var post = postService.GetById(postId);
             if(post == null)
@@ -293,9 +331,73 @@ namespace API.Controllers
                         }
                     }));
             }
-            hashtagService.RemoveTagFromPost(hashtag, post);
+
+            if (!hashtagService.PostHasTag(post, hashtag.Tag))
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "Post does not have this hashtag." }
+                        }
+                    }));
+            }
+
+            hashtagService.RemoveTagFromPost(hashtag.Tag, post);
             return Ok(ServiceResult<Post>.Success(post));
         }
+
+        [HttpGet("getPostHashtags")]
+        public IActionResult GetPostHashtags([FromQuery] PostsGetRequest model)
+        {
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            model.OrderBy = typeof(Post).GetProperty(model.OrderBy) != null
+                                ? model.OrderBy
+                                : nameof(BaseEntity.Id);
+
+            HashtagServices service = new HashtagServices();
+
+            var foundPosts = new List<Post>();
+            try
+            {
+                foundPosts = service.SearchPostsByHashtag(model.Filter.Hashtag);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
+
+            Expression<Func<Post, bool>> filter = GetPublicPostsFilter(model);
+            var response = new PostsGetResponse();    
+
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
+            response.OrderBy = model.OrderBy;
+            response.SortAscending = model.SortAscending;
+
+            PopulateGetResponse(model, response);
+
+            response.Pager.Count = foundPosts.Count;
+            response.Items = foundPosts;
+
+            return Ok(ServiceResult<PostsGetResponse>.Success(response));
+                
+        }
+        
+        
         #endregion
 
         #region Image Management

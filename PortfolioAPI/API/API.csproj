@@ -21,6 +21,7 @@
   <ItemGroup>
     <Folder Include="Infrastructure\RequestDTOs\Auth\" />
     <Folder Include="Infrastructure\RequestDTOs\Course\" />
+    <Folder Include="Infrastructure\RequestDTOs\Hashtag\" />
     <Folder Include="Infrastructure\RequestDTOs\SocialNetwork\" />
     <Folder Include="Infrastructure\RequestDTOs\Work\" />
     <Folder Include="Infrastructure\ResponseDTOs\Course\" />
