@@ -10,6 +10,10 @@ namespace Common.Services;
 
 public class PostServices : BaseServices<Post>
 {
+    /* public List<Post> GetUserPosts(int userId)
+    {
+        return GetAll(x => x.UserId == userId);
+    } */
     public void SavePost(User user, Post post)
     {
         Context.Attach(user);

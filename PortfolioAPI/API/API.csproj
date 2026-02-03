@@ -29,7 +29,6 @@
     <Folder Include="Infrastructure\ResponseDTOs\Event\" />
     <Folder Include="Infrastructure\ResponseDTOs\Post\" />
     <Folder Include="Infrastructure\ResponseDTOs\Shared\" />
-    <Folder Include="Infrastructure\ResponseDTOs\User\" />
     <Folder Include="Infrastructure\ResponseDTOs\Work\" />
     <Folder Include="Services\" />
   </ItemGroup>

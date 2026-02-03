@@ -99,6 +99,74 @@ namespace API.Controllers
             return Ok(ServiceResult<User>.Success(forUpdate));
         }
 
+        [HttpGet("getBio/{userId}")]
+        public IActionResult GetBio([FromRoute]int userId)
+        {
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(userId);
+
+            if(user is null)
+                 return NotFound(
+                    ServiceResult<UserRequest>.Failure(
+                        null,
+                        new List<Error>
+                        {
+                            new Error
+                            {
+                                Key = "Global",
+                                Messages = new List<string>
+                                {
+                                    "User not found."
+                                }
+                            }
+                        }
+                    )
+                );
+            FullUser fullUser = userServices.GetFullUser(userId);
+            return Ok(ServiceResult<FullUser                                                                                                                                                                                                                                                                                                                                                                                                                             >.Success(fullUser));
+        }
+
+        [HttpGet("getUserFullInfo/{userId}")]
+        public IActionResult GetUserFullInfo([FromRoute]int userId)
+        {
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(userId);
+
+            if(user is null)
+                 return NotFound(
+                    ServiceResult<UserRequest>.Failure(
+                        null,
+                        new List<Error>
+                        {
+                            new Error
+                            {
+                                Key = "Global",
+                                Messages = new List<string>
+                                {
+                                    "User not found."
+                                }
+                            }
+                        }
+                    )
+                );
+            FullUser fullUser = userServices.GetFullUser(userId);
+            
+            var response = new FullUserExtension
+            {
+                Posts = user.Posts,
+                SavedPosts = user.SavedPosts,
+                SocialNetworks = user.SocialNetworks,
+                Projects = user.Projects,
+                Educations = user.Educations,
+                Jobs = user.Jobs,
+                Courses = user.Courses,
+                Events = user.Events,
+                UserSkills = user.UserSkills
+            };
+
+            return Ok(ServiceResult<FullUserExtension>.Success(response));
+        }
+
         [Authorize]
         [HttpPost("addSocialNetwork")]
         public IActionResult AddSocialNetwork([FromBody] SocialNetworkRequest model)
