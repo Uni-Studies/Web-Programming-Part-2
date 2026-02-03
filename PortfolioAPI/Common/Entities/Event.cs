@@ -20,6 +20,6 @@ public class Event : BaseEntity
     public TimeOnly EndTime { get; set; }
 
     [JsonIgnore]
-    public List<User> EnrolledUsers { get; set; }
+    public virtual List<User> EnrolledUsers { get; set; }
 
 }

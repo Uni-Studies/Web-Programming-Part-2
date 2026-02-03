@@ -21,8 +21,6 @@ namespace API.Controllers
     {
         protected override void PopulateEntity(Event item, EventRequest model)
         {
-            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-
             item.Title = model.Title;
             item.Description = model.Description;
             item.Location = model.Location;
@@ -38,6 +36,7 @@ namespace API.Controllers
 
         protected override Expression<Func<Event, bool>> GetFilter(EventGetRequest model)
         {
+            
             model.Filter ??= new EventsGetFilterRequest();
 
             return 
@@ -53,23 +52,7 @@ namespace API.Controllers
                     (model.Filter.EndTime == default || e.EndTime <= model.Filter.EndTime);
         }
 
-        protected virtual Expression<Func<Event, bool>> GetPublicFilter(EventGetRequest model)
-        {
-            model.Filter ??= new EventsGetFilterRequest();
-
-            return 
-                e =>
-                    (string.IsNullOrEmpty(model.Filter.Title) || e.Title.Contains(model.Filter.Title)) &&
-                    (string.IsNullOrEmpty(model.Filter.Location) || e.Location.Contains(model.Filter.Location)) &&
-                    (string.IsNullOrEmpty(model.Filter.Type) || e.Type.Contains(model.Filter.Type)) &&
-                    (model.Filter.Price == 0 || e.Price == model.Filter.Price) &&
-                    (model.Filter.Capacity == 0 || e.Capacity == model.Filter.Capacity) &&
-                    (model.Filter.StartDate == default || e.StartDate >= model.Filter.StartDate) &&
-                    (model.Filter.EndDate == default || e.EndDate <= model.Filter.EndDate) &&
-                    (model.Filter.StartTime == default || e.StartTime >= model.Filter.StartTime) &&
-                    (model.Filter.EndTime == default || e.EndTime <= model.Filter.EndTime);
-        }
-
+      
         protected override void PopulateGetResponse(EventGetRequest request, EventsGetResponse response)
         {
             response.Filter = request.Filter;
@@ -94,7 +77,7 @@ namespace API.Controllers
 
             EventServices service = new EventServices();
 
-            Expression<Func<Event, bool>> filter = GetPersonalFilter(model);
+            Expression<Func<Event, bool>> filter = GetFilter(model);
 
             var response = new EventsGetResponse();
 

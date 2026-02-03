@@ -448,7 +448,7 @@ namespace API.Controllers
                 image.CopyTo(stream);
             }
             ImageServices imageServices = new ImageServices();
-            Image imageEntity = new Image { Imagepath = fileName, PostId = post.Id };
+            Image imageEntity = new Image { ImagePath = fileName, PostId = post.Id };
             imageServices.Save(imageEntity);
             imageServices.AddImageToPost(imageEntity, post);
             
@@ -490,7 +490,7 @@ namespace API.Controllers
                     }));
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", image.Imagepath);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", image.ImagePath);
 
             if (System.IO.File.Exists(filePath))
             {
