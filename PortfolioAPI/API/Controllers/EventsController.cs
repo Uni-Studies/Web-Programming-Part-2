@@ -250,6 +250,5 @@ namespace API.Controllers
 
             return Ok(ServiceResult<EventsGetResponse>.Success(response));
         }
-
     }
 }

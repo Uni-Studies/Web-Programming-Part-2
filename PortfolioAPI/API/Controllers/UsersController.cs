@@ -150,7 +150,8 @@ namespace API.Controllers
                     )
                 );
             FullUser fullUser = userServices.GetFullUser(userId);
-            
+            SkillServices skillServices = new SkillServices();
+            var skills = skillServices.GetUserSkills(user);
             var response = new FullUserExtension
             {
                 Posts = user.Posts,
@@ -161,7 +162,33 @@ namespace API.Controllers
                 Jobs = user.Jobs,
                 Courses = user.Courses,
                 Events = user.Events,
-                UserSkills = user.UserSkills
+                UserSkills = skills
+            };
+
+            return Ok(ServiceResult<FullUserExtension>.Success(response));
+        }
+
+        [HttpGet("getUserPortfolio")]
+        public IActionResult GetUserPortfolio()
+        {
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            FullUser fullUser = userServices.GetFullUser(loggedUserId);
+            SkillServices skillServices = new SkillServices();
+            var skills = skillServices.GetUserSkills(user);
+            var response = new FullUserExtension
+            {
+                Posts = user.Posts,
+                SavedPosts = user.SavedPosts,
+                SocialNetworks = user.SocialNetworks,
+                Projects = user.Projects,
+                Educations = user.Educations,
+                Jobs = user.Jobs,
+                Courses = user.Courses,
+                Events = user.Events,
+                UserSkills = skills
             };
 
             return Ok(ServiceResult<FullUserExtension>.Success(response));

@@ -39,4 +39,15 @@ public class SkillServices : BaseServices<Skill>
        Context.SaveChanges();
     }
 
+    public List<Skill> GetUserSkills(User user)
+    {
+        var skills = new List<Skill>();
+        var userSkills = user.UserSkills;
+        foreach(var userSkill in userSkills)
+        {
+            var skill = GetById(userSkill.SkillId);
+            skills.Add(skill);
+        }
+        return skills;
+    }
 }
