@@ -21,12 +21,14 @@ namespace API.Controllers.UserSubmissionsControllers
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
+            item.UserId = loggedUserId;
             item.Sphere = model.Sphere;
             item.Occupation = model.Occupation;
             item.Location = model.Location;
             item.Salary = model.Salary;
             item.StartDate = model.StartDate;
             item.EndDate = model.EndDate;
+            item.Company = model.Company;
         }
 
         protected override Expression<Func<Work, bool>> GetFilter(WorkGetRequest model)
@@ -65,17 +67,27 @@ namespace API.Controllers.UserSubmissionsControllers
         }
 
         [Authorize]
-        [HttpGet]
-        public IActionResult GetPersonalOne()
+        [HttpGet("getPersonalOne/{workId}")]
+        public IActionResult GetPersonalOne([FromRoute] int workId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             WorkServices service = new WorkServices();
-            var item = service.GetById(loggedUserId);
-            return Ok(ServiceResult<Work>.Success(item));
+            try
+            {
+                var item = service.GetWorkByUserId(loggedUserId, workId);
+                return Ok(ServiceResult<Work>.Success(item));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return NotFound(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("getPersonalWorks")]
         public virtual IActionResult GetPersonalJobs([FromQuery] WorkGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();

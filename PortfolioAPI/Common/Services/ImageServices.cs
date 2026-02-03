@@ -8,15 +8,15 @@ public class ImageServices : BaseServices<Image>
 {
     public void AddImageToPost(Image image, Post post)
     {
-        post.Images.Add(image);
+        //Context.Attach(post);
         image.Post = post;
-        Save(image);  
+        Context.SaveChanges();  
     }
 
     public void RemoveImageFromPost(Image image, Post post)
     {
-        post.Images.Remove(image);
+        //Context.Attach(post);
         image.Post = null;
-        Save(image);  
+        Context.SaveChanges();
     }
 }

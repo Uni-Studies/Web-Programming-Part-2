@@ -21,10 +21,12 @@
   <ItemGroup>
     <Folder Include="Infrastructure\RequestDTOs\Auth\" />
     <Folder Include="Infrastructure\RequestDTOs\Course\" />
+    <Folder Include="Infrastructure\RequestDTOs\Event\" />
     <Folder Include="Infrastructure\RequestDTOs\Hashtag\" />
     <Folder Include="Infrastructure\RequestDTOs\SocialNetwork\" />
     <Folder Include="Infrastructure\RequestDTOs\Work\" />
     <Folder Include="Infrastructure\ResponseDTOs\Course\" />
+    <Folder Include="Infrastructure\ResponseDTOs\Event\" />
     <Folder Include="Infrastructure\ResponseDTOs\Post\" />
     <Folder Include="Infrastructure\ResponseDTOs\Shared\" />
     <Folder Include="Infrastructure\ResponseDTOs\User\" />

@@ -4,13 +4,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using API.Infrastructure.RequestDTOs.Education;
 using API.Infrastructure.RequestDTOs.Shared;
+using API.Infrastructure.RequestDTOs.Skill;
 using API.Infrastructure.ResponseDTOs.Education;
 using API.Infrastructure.ResponseDTOs.Shared;
 using API.Services;
 using Common;
 using Common.Entities;
+using Common.Entities.ManyToManyEntities;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +23,7 @@ using Error = Common.Error;
 
 namespace API.Controllers.UserSubmissionsControllers
 {
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
     public class EducationsController : BaseCRUDController<Education, EducationServices, EducationRequest, EducationsGetRequest, EducationsGetResponse>
     {
@@ -128,6 +131,103 @@ namespace API.Controllers.UserSubmissionsControllers
             );
 
             return Ok(ServiceResult<EducationsGetResponse>.Success(response));
+        }
+
+          [Authorize]
+        [HttpPost("addSkill/{educationId}")]
+        public IActionResult AddSkill([FromRoute] int educationId, [FromBody] SkillRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);  
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            EducationServices educationServices = new EducationServices();
+
+            var education = educationServices.GetById(educationId);
+            if(education is null)
+                 return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Education not found" }
+                        }
+                    }));
+
+            model.Name = model.Name.Trim().ToUpper();
+            SkillServices skillServices = new SkillServices();
+            Skill item = new Skill() { Name = model.Name, Importance = model.Importance };
+            
+            if(!skillServices.SkillExists(model.Name))
+                 skillServices.Save(item);
+           
+            var savedSkill = skillServices.GetByName(model.Name);
+            if(savedSkill is null) // in case skill does not exist in the db
+                 return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Skill not found" }
+                        }
+                    }));
+
+            try
+            {
+                var userSkill = skillServices.AddSkillToSubmission(loggedUserId, savedSkill.Id, education);
+                skillServices.MapUserSkillToUserAndSkill(user, savedSkill, userSkill);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
+
+            return Ok(ServiceResult<Skill>.Success(item));
+
+        }
+
+
+        [Authorize]
+        [HttpPost("removeSkill/{educationId}/{skillId}")]
+        public IActionResult RemoveSkill([FromRoute] int educationId, [FromRoute] int skillId, [FromRoute] SkillsGetRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);  
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            EducationServices educationServices = new EducationServices();
+
+            var education = educationServices.GetById(educationId);
+            if(education is null)
+                 return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Education not found" }
+                        }
+                    }));
+
+            UserSkillServices userSkillServices = new UserSkillServices();
+            var userSkill = userSkillServices.GetById(loggedUserId, skillId, Common.Enums.SubmissionType.Education, educationId);
+            userSkillServices.Delete(userSkill);
+
+            return Ok(ServiceResult<UserSkill>.Success(userSkill));
         }
     }
 }

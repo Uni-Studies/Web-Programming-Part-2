@@ -23,6 +23,8 @@ public class AppDbContext : DbContext
     public DbSet<Hashtag> Hashtags { get; set; }
     public DbSet<SavedPost> SavedPosts { get; set; }
     public DbSet<UserSkill> UserSkills { get; set; }
+    public DbSet<Event> Events { get; set; }
+    public DbSet<EventUser> EventUsers { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //base.OnConfiguring(optionsBuilder);
@@ -155,6 +157,31 @@ public class AppDbContext : DbContext
             .WithMany(s => s.UserSkills)
             .HasForeignKey(us => us.SkillId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        #endregion
+
+        #region Events
+          modelBuilder.Entity<Event>()
+            .HasMany(e => e.EnrolledUsers)
+            .WithMany(u => u.Events)
+            .UsingEntity<EventUser>(
+                eu => eu
+                    .HasOne(eu => eu.User)
+                    .WithMany()
+                    .HasForeignKey(eu => eu.UserId)
+                    .OnDelete(DeleteBehavior.Cascade),
+
+                eu => eu
+                    .HasOne(eu => eu.Event)
+                    .WithMany()
+                    .HasForeignKey(eu => eu.EventId)
+                    .OnDelete(DeleteBehavior.Cascade),
+
+                eu => eu.HasKey(t => new { t.EventId, t.UserId })
+            );
+
+
+
 
         #endregion
     }

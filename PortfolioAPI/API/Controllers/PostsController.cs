@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
@@ -402,9 +403,21 @@ namespace API.Controllers
 
         #region Image Management
         [Authorize]
-        [HttpPost("addImageToPost")]
-        public IActionResult AddImageToPost([FromBody] Image image, [FromRoute] int postId)
+        [HttpPost("addImageToPost/{postId}")]
+        public IActionResult AddImageToPost([FromRoute] int postId, [FromForm] IFormFile image)
         {
+            if(image == null || image.Length == 0)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Image is required" }
+                        }
+                    }));
+            }
             PostServices postServices = new PostServices();
             var post = postServices.GetById(postId);
             if(post == null)
@@ -420,15 +433,31 @@ namespace API.Controllers
                     }));
             }
 
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using(var stream = new FileStream(filePath, FileMode.Create))
+            {
+                image.CopyTo(stream);
+            }
             ImageServices imageServices = new ImageServices();
-            imageServices.AddImageToPost(image, post);
+            Image imageEntity = new Image { Imagepath = fileName, PostId = post.Id };
+            imageServices.Save(imageEntity);
+            imageServices.AddImageToPost(imageEntity, post);
             
-            return Ok(ServiceResult<Image>.Success(image));
+            return Ok(ServiceResult<Image>.Success(imageEntity));
         }
 
         [Authorize]
-        [HttpPost("removeImageFromPost")]
-        public IActionResult RemoveImageFromPost([FromBody] Image image, [FromRoute] int postId)
+        [HttpPost("removeImageFromPost/{imageId}/{postId}")]
+        public IActionResult RemoveImageFromPost([FromRoute] int imageId, [FromRoute] int postId)
         {
             PostServices postServices = new PostServices();
             var post = postServices.GetById(postId);
@@ -446,7 +475,30 @@ namespace API.Controllers
             }
 
             ImageServices imageServices = new ImageServices();
+            var image = imageServices.GetById(imageId);
+
+            if(image == null || image.PostId != post.Id)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Image not found for this post" }
+                        }
+                    }));
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", image.Imagepath);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+
             imageServices.RemoveImageFromPost(image, post);
+            imageServices.Delete(image);
             
             return Ok(ServiceResult<Image>.Success(image));
         }

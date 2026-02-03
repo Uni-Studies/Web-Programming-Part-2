@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using API.Infrastructure.RequestDTOs.Course;
 using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Course;
 using API.Infrastructure.ResponseDTOs.Shared;
+using API.Services;
 using Common;
 using Common.Entities;
 using Common.Services;
@@ -21,6 +23,9 @@ namespace API.Controllers.UserSubmissionsControllers
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
+            item.UserId = loggedUserId;
+            item.StartDate = model.StartDate;
+            item.EndDate = model.EndDate;
             item.Name = model.Name;
             item.Price = model.Price;
             item.Tutor = model.Tutor;
@@ -65,17 +70,27 @@ namespace API.Controllers.UserSubmissionsControllers
         }
 
         [Authorize]
-        [HttpGet]
-        public IActionResult GetPersonalOne()
+        [HttpGet("getPersonalOne/{courseId}")]
+        public IActionResult GetPersonalOne([FromRoute] int courseId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             CourseServices service = new CourseServices();
-            var item = service.GetById(loggedUserId);
-            return Ok(ServiceResult<Course>.Success(item));
+            try
+            {
+                var item = service.GetCourseByUserId(loggedUserId, courseId);
+                return Ok(ServiceResult<Course>.Success(item));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return NotFound(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("getPersonalCourses")]
         public virtual IActionResult GetPersonalCourses([FromQuery] CoursesGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();

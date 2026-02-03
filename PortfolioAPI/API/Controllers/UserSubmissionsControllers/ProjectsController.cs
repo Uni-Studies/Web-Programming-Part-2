@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using API.Infrastructure.RequestDTOs.Project;
 using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Project;
 using API.Infrastructure.ResponseDTOs.Shared;
+using API.Services;
 using Common;
 using Common.Entities;
 using Common.Services;
@@ -22,6 +24,8 @@ namespace API.Controllers.UserSubmissionsControllers
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
 
             item.UserId = loggedUserId;
+            item.StartDate = model.StartDate;
+            item.EndDate = model.EndDate;
             item.Type = model.Type;
             item.Title = model.Title;
             item.Topic = model.Topic;
@@ -68,17 +72,27 @@ namespace API.Controllers.UserSubmissionsControllers
         }
 
         [Authorize]
-        [HttpGet]
-        public IActionResult GetPersonalOne()
+        [HttpGet("getPersonalOne/{projectId}")]
+        public IActionResult GetPersonalOne([FromRoute] int projectId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             ProjectServices service = new ProjectServices();
-            var item = service.GetById(loggedUserId);
-            return Ok(ServiceResult<Project>.Success(item));
+            try
+            {
+                var item = service.GetProjectByUserId(loggedUserId, projectId);
+                return Ok(ServiceResult<Project>.Success(item));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return NotFound(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("getPersonalProjects")]
         public virtual IActionResult GetPersonalProjects([FromQuery] ProjectsGetRequest model)
         {
             model.Pager = model.Pager ?? new PagerRequest();

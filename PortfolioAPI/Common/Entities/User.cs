@@ -42,6 +42,9 @@ public class User : BaseEntity
 
     [JsonIgnore]
     public virtual List<Course> Courses { get; set; } 
+    
+    [JsonIgnore]
+    public virtual List<Event> Events { get; set; }
 
     [JsonIgnore]
     public virtual List<UserSkill> UserSkills { get; set; }
