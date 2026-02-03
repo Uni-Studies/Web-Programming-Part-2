@@ -100,5 +100,156 @@ namespace API.Controllers
 
             return Ok(ServiceResult<EventsGetResponse>.Success(response));
         }
+
+        [Authorize]
+        [HttpGet("enrollUser/{eventId}")]
+
+        public IActionResult EnrollUser([FromRoute] int eventId) 
+        {
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            EventServices eventServices = new EventServices();
+            var searchedEvent = eventServices.GetById(eventId);
+
+            if(searchedEvent == null)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Event not found" }
+                        }
+                    }));
+            }
+
+            try
+            {
+                eventServices.EnrollUser(user, searchedEvent); 
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
+            
+            return Ok(ServiceResult<Event>.Success(searchedEvent));
+        }
+
+        [Authorize]
+        [HttpGet("cancelEnrollment/{eventId}")]
+        public IActionResult CancelEnrollment([FromRoute]int eventId)
+        {
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            EventServices eventServices = new EventServices();
+            var searchedEvent = eventServices.GetById(eventId);
+            if(searchedEvent == null)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Event not found" }
+                        }
+                    }));
+            }
+
+            eventServices.CancelEnrollment(user, searchedEvent);
+            
+            return Ok(ServiceResult<Event>.Success(searchedEvent));
+        }
+
+        [Authorize]
+        [HttpGet("getUserEventEnrollments")]
+        public IActionResult GetUserEventEnrollments([FromQuery] EventGetRequest model)
+        {
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            model.OrderBy = typeof(Post).GetProperty(model.OrderBy) != null
+                                ? model.OrderBy
+                                : nameof(BaseEntity.Id);
+                                
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            EventServices service = new EventServices();
+            var userEvents = service.GetUserEvents(user);
+
+            Expression<Func<Event, bool>> filter = GetFilter(model);
+
+            var response = new EventsGetResponse();    
+
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
+            response.OrderBy = model.OrderBy;
+            response.SortAscending = model.SortAscending;
+
+            PopulateGetResponse(model, response);
+
+            response.Pager.Count = userEvents.Count;
+            response.Items = userEvents;
+
+            return Ok(ServiceResult<EventsGetResponse>.Success(response));
+        }
+        
+        public IActionResult GetEventParticipants([FromQuery] EventGetRequest model)
+        {
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            model.OrderBy = typeof(Post).GetProperty(model.OrderBy) != null
+                                ? model.OrderBy
+                                : nameof(BaseEntity.Id);
+                                
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            EventServices service = new EventServices();
+            var userEvents = service.GetUserEvents(user);
+
+            Expression<Func<Event, bool>> filter = GetFilter(model);
+
+            var response = new EventsGetResponse();    
+
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
+            response.OrderBy = model.OrderBy;
+            response.SortAscending = model.SortAscending;
+
+            PopulateGetResponse(model, response);
+
+            response.Pager.Count = userEvents.Count;
+            response.Items = userEvents;
+
+            return Ok(ServiceResult<EventsGetResponse>.Success(response));
+        }
+
     }
 }
