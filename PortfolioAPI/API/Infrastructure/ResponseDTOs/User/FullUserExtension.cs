@@ -16,6 +16,6 @@ public class FullUserExtension
     public virtual List<Education> Educations { get; set; }
     public virtual List<Work> Jobs { get; set; }
     public virtual List<Course> Courses { get; set; } 
-    public virtual List<Event> Events { get; set; }
+    public virtual List<Interest> Interests { get; set; }
     public virtual List<Skill> UserSkills { get; set; }
 }

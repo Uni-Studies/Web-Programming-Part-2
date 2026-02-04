@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using API.Infrastructure.RequestDTOs.Interest;
+using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.RequestDTOs.SocialNetwork;
 using API.Infrastructure.RequestDTOs.User;
+using API.Infrastructure.ResponseDTOs.Interest;
+using API.Infrastructure.ResponseDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.User;
 using API.Services;
 using Common;
@@ -30,7 +34,7 @@ namespace API.Controllers
             item.Country = model.Country;
             item.Nationality = model.Nationality;
             item.Details = model.Details;
-            item.ProfilePicture = model.ProfilePicture;
+
         }
 
         protected override Expression<Func<User, bool>> GetFilter(UsersGetRequest model)
@@ -148,7 +152,7 @@ namespace API.Controllers
                 Educations = user.Educations,
                 Jobs = user.Jobs,
                 Courses = user.Courses,
-                Events = user.Events,
+                Interests = user.Interests,
                 UserSkills = skills
             };
 
@@ -216,5 +220,196 @@ namespace API.Controllers
 
             return Ok(ServiceResult<SocialNetwork>.Success(socialNetwork));
         }
+
+        #region Interests
+        [Authorize]
+        [HttpPost("addInterest/{interestId}")]
+        public IActionResult AddInterest([FromBody] InterestRequest model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Interest Name",
+                            Messages = new List<string> { "Interest is required" }
+                        }
+                    }));
+            }
+
+            model.Name = model.Name.Trim().ToLower();
+            
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            if(user == null)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "User not found" }
+                        }
+                    }));
+            }
+
+            InterestServices interestServices = new InterestServices();
+            var interest = interestServices.GetByName(model.Name);
+
+            if (interest is not null && interestServices.UserHasInterest(user, interest.Name))
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "Interest already has this hashtag." }
+                        }
+                    }));
+            }
+
+            if(interest is null)
+            {
+                interest = new Interest() { Name = model.Name };
+                interestServices.Save(interest);
+            }
+            
+            interestServices.AddInterestToUser(interest.Name, user);
+            return Ok(ServiceResult<Interest>.Success(interest));
+        }
+        
+        [Authorize]
+        [HttpDelete("removeInterest/{interestId}")]
+        public IActionResult RemoveInterest([FromRoute] int interestId, [FromBody] InterestRequest model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Interest Name",
+                            Messages = new List<string> { "Interest name is required" }
+                        }
+                    }));
+            }
+
+            model.Name = model.Name.Trim().ToLower();
+            InterestServices interestServices = new InterestServices();
+            
+            var interest = interestServices.GetByName(model.Name);
+            if(interest == null)
+            {
+                return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Interest not found" }
+                        }
+                    }));
+            }
+
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+            if(user == null)
+            {
+                return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Post not found" }
+                        }
+                    }));
+            }
+
+            if (!interestServices.UserHasInterest(user, interest.Name))
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "Post does not have this hashtag." }
+                        }
+                    }));
+            }
+
+            interestServices.RemoveInterestFromUser(interest.Name, user);
+            return Ok(ServiceResult<Interest>.Success(interest));
+        }
+
+        [HttpGet("getUserInterests/{userId}")]
+        public IActionResult GetUserInterests([FromRoute] int userId, [FromQuery] InterestsGetRequest model)
+        {
+
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            model.OrderBy = typeof(Post).GetProperty(model.OrderBy) != null
+                                ? model.OrderBy
+                                : nameof(BaseEntity.Id);
+
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(userId);
+            if(user == null)
+            {
+                return NotFound(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Post not found" }
+                        }
+                    }));
+            }
+
+            InterestServices service = new InterestServices();
+            var interests = new List<Interest>();
+            try
+            {
+                interests = service.GetUserInterests(user);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
+
+            var response = new InterestsGetResponse();    
+
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
+            response.OrderBy = model.OrderBy;
+            response.SortAscending = model.SortAscending;
+            response.Pager.Count = interests.Count;
+            response.Items = interests;
+
+            return Ok(ServiceResult<InterestsGetResponse>.Success(response));
+                
+        }
+        #endregion
     }
 }

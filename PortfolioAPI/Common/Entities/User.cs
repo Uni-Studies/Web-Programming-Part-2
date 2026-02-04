@@ -17,7 +17,6 @@ public class User : BaseEntity
     public string Country { get; set; }
     public string Nationality { get; set; }
     public string Details { get; set; }
-    public string ProfilePicture { get; set; }
 
     //public virtual AuthUser AuthUser { get; set; }
     //public virtual List<UserSubmissionBaseEntity> UserSubmissions { get; set; }
@@ -44,8 +43,8 @@ public class User : BaseEntity
     public virtual List<Course> Courses { get; set; } 
     
     [JsonIgnore]
-    public virtual List<Event> Events { get; set; }
+    public virtual List<UserSkill> UserSkills { get; set; }
 
     [JsonIgnore]
-    public virtual List<UserSkill> UserSkills { get; set; }
+    public virtual List<Interest> Interests { get; set; }
 }

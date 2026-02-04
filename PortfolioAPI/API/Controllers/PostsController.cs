@@ -224,7 +224,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpPost("unsavePost/{postId}")]
+        [HttpDelete("unsavePost/{postId}")]
         public IActionResult UnsavePost([FromRoute]int postId)
         {
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
@@ -358,7 +358,7 @@ namespace API.Controllers
         }
         
         [Authorize]
-        [HttpPost("removeHashtag/{postId}")]
+        [HttpDelete("removeHashtag/{postId}")]
         public IActionResult RemoveHashtag([FromBody] HashtagRequest model, [FromRoute] int postId)
         {
             if (string.IsNullOrWhiteSpace(model.Tag))
@@ -454,7 +454,6 @@ namespace API.Controllers
                 );
             }
 
-            Expression<Func<Post, bool>> filter = GetPublicPostsFilter(model);
             var response = new PostsGetResponse();    
 
             response.Pager = new PagerResponse();

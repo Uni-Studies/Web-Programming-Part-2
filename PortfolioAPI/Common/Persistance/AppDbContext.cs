@@ -24,8 +24,8 @@ public class AppDbContext : DbContext
     public DbSet<Hashtag> Hashtags { get; set; }
     public DbSet<SavedPost> SavedPosts { get; set; }
     public DbSet<UserSkill> UserSkills { get; set; }
-    public DbSet<Event> Events { get; set; }
-    public DbSet<EventUser> EventUsers { get; set; }
+    public DbSet<Interest> Interests { get; set; }
+    public DbSet<UserInterest> UserInterests { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //base.OnConfiguring(optionsBuilder);
@@ -162,28 +162,26 @@ public class AppDbContext : DbContext
 
         #endregion
 
-        #region Events
-          modelBuilder.Entity<Event>()
-            .HasMany(e => e.EnrolledUsers)
-            .WithMany(u => u.Events)
-            .UsingEntity<EventUser>(
-                eu => eu
-                    .HasOne(eu => eu.User)
+
+        #region UserInterests
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Interests)
+            .WithMany(i => i.Users)
+            .UsingEntity<UserInterest>(
+                ui => ui
+                    .HasOne(ui => ui.Interest)
                     .WithMany()
-                    .HasForeignKey(eu => eu.UserId)
+                    .HasForeignKey(ui => ui.InterestId)
                     .OnDelete(DeleteBehavior.Cascade),
 
-                eu => eu
-                    .HasOne(eu => eu.Event)
+                ui => ui
+                    .HasOne(ui => ui.User)
                     .WithMany()
-                    .HasForeignKey(eu => eu.EventId)
+                    .HasForeignKey(ui => ui.UserId)
                     .OnDelete(DeleteBehavior.Cascade),
 
-                eu => eu.HasKey(t => new { t.EventId, t.UserId })
+                ui => ui.HasKey(t => new { t.UserId, t.InterestId })
             );
-
-
-
 
         #endregion
     }

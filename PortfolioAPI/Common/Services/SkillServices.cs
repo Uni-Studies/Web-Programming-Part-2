@@ -50,4 +50,15 @@ public class SkillServices : BaseServices<Skill>
         }
         return skills;
     }
+
+    /* public List<Skill> SkillsByImportance()
+    {
+        UserSkillServices userSkillServices = new UserSkillServices();
+        
+    } */
+
+    /* public List<User> GetUsersBySkill(int skillId)
+    {
+        
+    } */
 }

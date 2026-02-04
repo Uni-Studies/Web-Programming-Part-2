@@ -15,5 +15,4 @@ public class UserRequest
     public string Country { get; set; }
     public string Nationality { get; set; }
     public string Details { get; set; }
-    public string ProfilePicture { get; set; }
 }
