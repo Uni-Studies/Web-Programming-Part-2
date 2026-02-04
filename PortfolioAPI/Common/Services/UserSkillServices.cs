@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
+using Common.Entities;
 using Common.Entities.ManyToManyEntities;
 using Common.Enums;
 using Common.Persistance;
@@ -47,7 +48,4 @@ public class UserSkillServices
     {
         return Items.Where(filter).ToList();
     }
-
-    
-
 }

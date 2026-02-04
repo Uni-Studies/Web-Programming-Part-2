@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Common.Entities;
@@ -51,14 +52,37 @@ public class SkillServices : BaseServices<Skill>
         return skills;
     }
 
-    /* public List<Skill> SkillsByImportance()
+    private double CalculateAvgImportance(int skillId, List<UserSkill> userSkills)
     {
-        UserSkillServices userSkillServices = new UserSkillServices();
-        
-    } */
+        var skillOccurences = userSkills.Where(x => x.SkillId == skillId);
+        double importanceSum = skillOccurences.Sum(x => x.Importance);  
+        return importanceSum / skillOccurences.Count();
 
-    /* public List<User> GetUsersBySkill(int skillId)
+    }
+    public Dictionary<string, double> GetSkillsByImportance()
     {
+        Dictionary<string, double> skillsImportance = new Dictionary<string, double>();
+
+        UserSkillServices userSkillServices = new UserSkillServices();
+        var userSkills = userSkillServices.GetAll();
+        foreach(var skill in userSkills)
+        {
+            if (!skillsImportance.ContainsKey(skill.Skill.Name))
+            {
+                var avgImportance = CalculateAvgImportance(skill.SkillId, userSkills);
+                skillsImportance.Add(skill.Skill.Name, avgImportance);
+            }
+        }
+        return skillsImportance.OrderByDescending(x => x.Value).ToDictionary();
+    }
+
+    public List<User> GetUsersBySkill(string skillName)
+    {
+        var skill = GetByName(skillName);
+        if(skill is null)
+            throw new Exception("Skill not found");
         
-    } */
+        return skill.UserSkills.Select(x => x.User).ToList();
+
+    } 
 }
