@@ -4,6 +4,7 @@ using Common.Entities;
 using Common.Entities.ManyToManyEntities;
 using Common.Entities.UserSubmissionsEntities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Common.Persistance;
@@ -50,6 +51,7 @@ public class AppDbContext : DbContext
         #endregion
 
         #region AuthUser
+        
         modelBuilder.Entity<AuthUser>()
             .HasData(new AuthUser
             {

@@ -126,48 +126,7 @@ namespace API.Controllers
             return Ok(ServiceResult<FullUser                                                                                                                                                                                                                                                                                                                                                                                                                             >.Success(fullUser));
         }
 
-        [HttpGet("getUserFullInfo/{userId}")]
-        public IActionResult GetUserFullInfo([FromRoute]int userId)
-        {
-            UserServices userServices = new UserServices();
-            var user = userServices.GetById(userId);
-
-            if(user is null)
-                 return NotFound(
-                    ServiceResult<UserRequest>.Failure(
-                        null,
-                        new List<Error>
-                        {
-                            new Error
-                            {
-                                Key = "Global",
-                                Messages = new List<string>
-                                {
-                                    "User not found."
-                                }
-                            }
-                        }
-                    )
-                );
-            FullUser fullUser = userServices.GetFullUser(userId);
-            SkillServices skillServices = new SkillServices();
-            var skills = skillServices.GetUserSkills(user);
-            var response = new FullUserExtension
-            {
-                Posts = user.Posts,
-                SavedPosts = user.SavedPosts,
-                SocialNetworks = user.SocialNetworks,
-                Projects = user.Projects,
-                Educations = user.Educations,
-                Jobs = user.Jobs,
-                Courses = user.Courses,
-                Events = user.Events,
-                UserSkills = skills
-            };
-
-            return Ok(ServiceResult<FullUserExtension>.Success(response));
-        }
-
+        [Authorize]
         [HttpGet("getUserPortfolio")]
         public IActionResult GetUserPortfolio()
         {
@@ -178,8 +137,10 @@ namespace API.Controllers
             FullUser fullUser = userServices.GetFullUser(loggedUserId);
             SkillServices skillServices = new SkillServices();
             var skills = skillServices.GetUserSkills(user);
+
             var response = new FullUserExtension
             {
+                UserBio = fullUser,
                 Posts = user.Posts,
                 SavedPosts = user.SavedPosts,
                 SocialNetworks = user.SocialNetworks,
@@ -211,13 +172,25 @@ namespace API.Controllers
             /* socialNetwork.User = user; */
 
             SocialNetworkServices socialNetworkServices = new SocialNetworkServices();
+            if (socialNetworkServices.AccountExists(model.Account))
+            {
+                return BadRequest(ServiceResult<SocialNetwork>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Account already exists" }
+                        }
+                    }));
+            }
             socialNetworkServices.Save(socialNetwork); 
 
             return Ok(ServiceResult<SocialNetwork>.Success(socialNetwork));
         }
 
         [Authorize]
-        [HttpPost("removeSocialNetwork/{id}")]
+        [HttpDelete("removeSocialNetwork/{id}")]
         public IActionResult RemoveSocialNetwork([FromRoute]int id)
         {             
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
@@ -226,7 +199,15 @@ namespace API.Controllers
             var socialNetwork = socialNetworkServices.GetById(id);
 
             if (socialNetwork == null)
-                return NotFound($"Social network with id {id} not found.");
+                return BadRequest(ServiceResult<SocialNetwork>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Social network not found" }
+                        }
+                    }));
 
             if (socialNetwork.UserId != loggedUserId)
                 return Forbid("You cannot remove another user's social network.");

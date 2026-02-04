@@ -12,6 +12,7 @@ public class UserServices : BaseServices<User>
     public FullUser GetFullUser(int id, Expression<Func<User, bool>> filter = null)
     {
         var user = GetById(id);
+        
         AuthUserServices authUserServices = new AuthUserServices();
         string email = authUserServices.GetUsername(id);
         string username = authUserServices.GetEmail(id);
@@ -24,14 +25,6 @@ public class UserServices : BaseServices<User>
         };
 
         return fullUser;
-        /* var query = Items
-            .Include(u => u.AuthUser)
-            .AsQueryable();
-
-        if (filter != null)
-            query = query.Where(filter);
-
-        return query.FirstOrDefault(u => u.Id == id); */
     }
 
 }

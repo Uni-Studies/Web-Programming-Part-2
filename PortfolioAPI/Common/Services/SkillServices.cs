@@ -20,13 +20,13 @@ public class SkillServices : BaseServices<Skill>
     {
         return Items.Any(x => x.Name == name);
     }
-    public UserSkill AddSkillToSubmission(int userId, int skillId, UserSubmissionBaseEntity submission)
+    public UserSkill AddSkillToSubmission(int userId, int skillId, UserSubmissionBaseEntity submission, int importance)
     {
         UserSkillServices userSkillServices = new UserSkillServices();
         var actualType = submission.GetType().BaseType ?? submission.GetType();
         SubmissionType typeEnum = Enum.Parse<SubmissionType>(actualType.Name);
 
-        UserSkill userSkill = new UserSkill() { UserId = userId, SkillId = skillId, SubmissionId = submission.Id, SubmissionType = typeEnum};
+        UserSkill userSkill = new UserSkill() { UserId = userId, SkillId = skillId, SubmissionId = submission.Id, SubmissionType = typeEnum, Importance = importance };
         userSkillServices.Add(userSkill);
 
         return userSkill;

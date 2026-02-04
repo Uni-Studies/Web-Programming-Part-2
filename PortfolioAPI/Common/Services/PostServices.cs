@@ -10,21 +10,15 @@ namespace Common.Services;
 
 public class PostServices : BaseServices<Post>
 {
-    /* public List<Post> GetUserPosts(int userId)
-    {
-        return GetAll(x => x.UserId == userId);
-    } */
     public void SavePost(User user, Post post)
     {
-        Context.Attach(user);
-        Context.Attach(post);
-
-         if (user.SavedPosts.Contains(post))
+        if (post.SavedByUsers.Contains(user))
         {
             throw new ArgumentException("Post has already been saved!");
         }
         
-        user.SavedPosts.Add(post);
+        Context.Attach(user);
+        post.SavedByUsers.Add(user);
         post.SavesCount++;
 
         Context.SaveChanges();   
@@ -33,9 +27,7 @@ public class PostServices : BaseServices<Post>
     public void UnsavePost(User user, Post post)
     {
         Context.Attach(user);
-        Context.Attach(post);
-
-        user.SavedPosts.Remove(post);
+        post.SavedByUsers.Remove(user);
         post.SavesCount--;
 
         Context.SaveChanges();

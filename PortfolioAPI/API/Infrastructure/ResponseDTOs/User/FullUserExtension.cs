@@ -6,8 +6,9 @@ using Common.Entities.ManyToManyEntities;
 
 namespace API.Services;
 
-public class FullUserExtension : FullUser
+public class FullUserExtension
 {
+    public FullUser UserBio { get; set; }
     public virtual List<Post> Posts { get; set; }
     public virtual List<Post> SavedPosts { get; set; }
     public virtual List<SocialNetwork> SocialNetworks { get; set; }   

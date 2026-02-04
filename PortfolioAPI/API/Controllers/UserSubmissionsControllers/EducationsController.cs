@@ -133,7 +133,7 @@ namespace API.Controllers.UserSubmissionsControllers
             return Ok(ServiceResult<EducationsGetResponse>.Success(response));
         }
 
-          [Authorize]
+        [Authorize]
         [HttpPost("addSkill/{educationId}")]
         public IActionResult AddSkill([FromRoute] int educationId, [FromBody] SkillRequest model)
         {
@@ -162,7 +162,7 @@ namespace API.Controllers.UserSubmissionsControllers
 
             model.Name = model.Name.Trim().ToUpper();
             SkillServices skillServices = new SkillServices();
-            Skill item = new Skill() { Name = model.Name, Importance = model.Importance };
+            Skill item = new Skill() { Name = model.Name };
             
             if(!skillServices.SkillExists(model.Name))
                  skillServices.Save(item);
@@ -181,7 +181,7 @@ namespace API.Controllers.UserSubmissionsControllers
 
             try
             {
-                var userSkill = skillServices.AddSkillToSubmission(loggedUserId, savedSkill.Id, education);
+                var userSkill = skillServices.AddSkillToSubmission(loggedUserId, savedSkill.Id, education, model.Importance);
                 skillServices.MapUserSkillToUserAndSkill(user, savedSkill, userSkill);
             }
             catch (Exception ex)

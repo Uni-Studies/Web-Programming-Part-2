@@ -51,14 +51,11 @@ namespace API.Controllers
                     (string.IsNullOrEmpty(model.Filter.Location) || p.Location.Contains(model.Filter.Location)) &&
                     (string.IsNullOrEmpty(model.Filter.DescriptionContains) || p.Description.Contains(model.Filter.DescriptionContains)) &&
                     (model.Filter.CreatedAfter == null || p.CreatedAt >= model.Filter.CreatedAfter) &&
-                    (model.Filter.CreatedBefore == null || p.CreatedAt <= model.Filter.CreatedBefore) &&
-                    //(model.Filter.Hashtag == null || p.Hashtags.Any(h => h.Tag == model.Filter.Hashtag)) &&
-                    (model.Filter.UserId == null || p.UserId == model.Filter.UserId) &&
-                    (p.PrivacyLevel == PostPrivacyLevel.Public);
+                    (model.Filter.CreatedBefore == null || p.CreatedAt <= model.Filter.CreatedBefore);
         }
 
         protected Expression<Func<Post, bool>> GetPublicPostsFilter(PostsGetRequest model)
-        {
+        {           
             model.Filter ??= new PostsGetFilterRequest();
 
             return 
@@ -67,8 +64,8 @@ namespace API.Controllers
                     (string.IsNullOrEmpty(model.Filter.DescriptionContains) || p.Description.Contains(model.Filter.DescriptionContains)) &&
                     (model.Filter.CreatedAfter == null || p.CreatedAt >= model.Filter.CreatedAfter) &&
                     (model.Filter.CreatedBefore == null || p.CreatedAt <= model.Filter.CreatedBefore) &&
-                    //(model.Filter.Hashtag == null || p.Hashtags.Any(h => h.Tag == model.Filter.Hashtag)) &&
-                    (p.PrivacyLevel == PostPrivacyLevel.Public);
+                    (p.PrivacyLevel == PostPrivacyLevel.Public) &&
+                    (model.Filter.UserId == null || p.UserId == model.Filter.UserId);
 
         }
 
@@ -94,7 +91,71 @@ namespace API.Controllers
             model.SortAscending = false;
 
             var service = new PostServices();
+            UserServices userServices = new UserServices();
+            
             var filter = GetPublicPostsFilter(model);
+
+            if(model.Filter.UserId != null)
+            {
+                var user = userServices.GetById((int)model.Filter.UserId);
+                if(user == null)
+                {
+                    return BadRequest(ServiceResult<Post>.Failure(null,
+                        new List<Error>
+                        {
+                            new Error()
+                            {
+                                Key = "Global",
+                                Messages = new List<string>() { "User not found" }
+                            }
+                        }));
+                }
+            }
+
+            var response = new PostsGetResponse
+            {
+                Pager = new PagerResponse
+                {
+                    Page = model.Pager.Page,
+                    PageSize = model.Pager.PageSize,
+                    Count = service.Count(filter)
+                },
+                OrderBy = model.OrderBy,
+                SortAscending = model.SortAscending,
+            };
+
+            PopulateGetResponse(model, response);
+
+            response.Items = service.GetAll(
+                filter,
+                model.OrderBy,
+                model.SortAscending,
+                model.Pager.Page,
+                model.Pager.PageSize
+            );
+
+            return Ok(ServiceResult<PostsGetResponse>.Success(response));
+        }
+
+        [Authorize]
+        [HttpGet("getUserAllPosts")]
+        public IActionResult GetUserAllPosts([FromQuery] PostsGetRequest model)
+        {
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            
+            model.OrderBy = nameof(Common.Entities.Post.CreatedAt);
+            model.SortAscending = false;
+
+            var service = new PostServices();            
+            var filter = GetFilter(model);
 
             var response = new PostsGetResponse
             {
@@ -317,7 +378,19 @@ namespace API.Controllers
             HashtagServices hashtagService = new HashtagServices();
             
             var hashtag = hashtagService.GetByTag(model.Tag);
-            
+            if(hashtag == null)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error()
+                        {
+                            Key = "Global",
+                            Messages = new List<string>() { "Hashtag not found" }
+                        }
+                    }));
+            }
+
             PostServices postService = new PostServices();
             var post = postService.GetById(postId);
             if(post == null)
@@ -350,9 +423,10 @@ namespace API.Controllers
             return Ok(ServiceResult<Post>.Success(post));
         }
 
-        [HttpGet("getPostHashtags")]
-        public IActionResult GetPostHashtags([FromQuery] PostsGetRequest model)
+        [HttpGet("getPostsByHashtag")]
+        public IActionResult GetPostsByHashtag([FromQuery] PostsGetRequest model)
         {
+
             model.Pager = model.Pager ?? new PagerRequest();
             model.Pager.Page = model.Pager.Page <= 0
                                     ? 1
@@ -456,7 +530,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpPost("removeImageFromPost/{imageId}/{postId}")]
+        [HttpDelete("removeImageFromPost/{imageId}/{postId}")]
         public IActionResult RemoveImageFromPost([FromRoute] int imageId, [FromRoute] int postId)
         {
             PostServices postServices = new PostServices();

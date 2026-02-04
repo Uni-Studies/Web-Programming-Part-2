@@ -40,11 +40,10 @@ public class HashtagServices : BaseServices<Hashtag>
     public List<Post> SearchPostsByHashtag(string hashtag)
     {
         var tag = GetByTag(hashtag);
-        Context.Attach(tag);
 
         if(tag is null)
             throw new Exception("Tag is not found!");
-        
+        Context.Attach(tag);
         return tag.Posts; 
     }
 }

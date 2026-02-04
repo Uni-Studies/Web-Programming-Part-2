@@ -20,7 +20,6 @@ namespace API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        
         private void PopulateEntity(AuthUser item, AuthRegistrationRequest model, out string error)
         {
             error = null;
@@ -31,6 +30,7 @@ namespace API.Controllers
                 error = "User with such credentials exists";
                 return;
             }
+
             item.Email = model.Email ?? item.Email;
             item.Username = model.Username ?? item.Username;
             item.Password = model.Password ?? item.Password;
@@ -82,8 +82,7 @@ namespace API.Controllers
             {
                 
                 var authUser = authService.Register(model.Username, model.Email, model.Password);
-                //var authUser = authService.GetById(user.Id);
-
+  
                 TokenServices tokenServices = new TokenServices();
                 var token = tokenServices.CreateToken(authUser);
 
@@ -132,6 +131,7 @@ namespace API.Controllers
             return Ok(ServiceResult<AuthUser>.Success(forUpdate));
         }
 
+        [Authorize]
         [HttpDelete("deleteAccount")]
         public IActionResult Delete()
         {

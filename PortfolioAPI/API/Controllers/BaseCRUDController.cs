@@ -84,7 +84,7 @@ namespace API.Controllers
             return Ok(ServiceResult<EGetResponse>.Success(response));
         }
 
-        [HttpGet]
+        [HttpGet("getById")]
         [Route("{id}")]
         public IActionResult Get([FromRoute] int id)
         {

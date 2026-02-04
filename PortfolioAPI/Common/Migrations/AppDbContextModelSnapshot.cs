@@ -272,6 +272,9 @@ namespace Common.Migrations
                     b.Property<int>("SubmissionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Importance")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId", "SkillId", "SubmissionType", "SubmissionId");
 
                     b.HasIndex("SkillId");
@@ -372,9 +375,6 @@ namespace Common.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Importance")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
