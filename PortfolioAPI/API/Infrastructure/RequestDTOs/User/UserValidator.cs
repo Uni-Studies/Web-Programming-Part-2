@@ -9,14 +9,11 @@ public class UserValidator : AbstractValidator<UserRequest>
     {
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("FirstName is required.")
-            .MaximumLength(100).WithMessage("FirstName must be at most 100 characters.")
-            .Matches(@"^[a-zA-Z\s'-]+$").WithMessage("FirstName can only contain letters, spaces, hyphens, and apostrophes.");
+            .MaximumLength(100).WithMessage("FirstName must be at most 100 characters.");
 
         RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("LastName is required.")
-            .MaximumLength(100).WithMessage("LastName must be at most 100 characters.")
-            .Matches(@"^[a-zA-Z\s'-]+$").WithMessage("LastName can only contain letters, spaces, hyphens, and apostrophes.");
-
+            .MaximumLength(100).WithMessage("LastName must be at most 100 characters.");
         RuleFor(x => x.Sex)
             .MaximumLength(50).WithMessage("Sex must be at most 50 characters.");
 
@@ -38,8 +35,5 @@ public class UserValidator : AbstractValidator<UserRequest>
 
         RuleFor(x => x.Details)
             .MaximumLength(5000).WithMessage("Details must be at most 5000 characters.");
-
-        RuleFor(x => x.ProfilePicture)
-            .MaximumLength(500).WithMessage("ProfilePicture path must be at most 500 characters.");
     }
 }

@@ -44,8 +44,8 @@ public class UserSkillServices
 
     }
 
-    public List<UserSkill> GetAll(Expression<Func<UserSkill, bool>> filter = null)
+    public List<UserSkill> GetAll()
     {
-        return Items.Where(filter).ToList();
+        return Items.ToList();
     }
 }

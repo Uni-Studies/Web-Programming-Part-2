@@ -145,52 +145,6 @@ namespace Common.Migrations
                     b.ToTable("Educations");
                 });
 
-            modelBuilder.Entity("Common.Entities.Event", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DeadlineDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Events");
-                });
-
             modelBuilder.Entity("Common.Entities.Hashtag", b =>
                 {
                     b.Property<int>("Id")
@@ -228,19 +182,20 @@ namespace Common.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("Common.Entities.ManyToManyEntities.EventUser", b =>
+            modelBuilder.Entity("Common.Entities.Interest", b =>
                 {
-                    b.Property<int>("EventId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasKey("EventId", "UserId");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("Id");
 
-                    b.ToTable("EventUsers");
+                    b.ToTable("Interests");
                 });
 
             modelBuilder.Entity("Common.Entities.ManyToManyEntities.SavedPost", b =>
@@ -256,6 +211,21 @@ namespace Common.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("SavedPosts");
+                });
+
+            modelBuilder.Entity("Common.Entities.ManyToManyEntities.UserInterest", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterestId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "InterestId");
+
+                    b.HasIndex("InterestId");
+
+                    b.ToTable("UserInterests");
                 });
 
             modelBuilder.Entity("Common.Entities.ManyToManyEntities.UserSkill", b =>
@@ -440,9 +410,6 @@ namespace Common.Migrations
                     b.Property<string>("Nationality")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Sex")
                         .HasColumnType("nvarchar(max)");
 
@@ -542,25 +509,6 @@ namespace Common.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Common.Entities.ManyToManyEntities.EventUser", b =>
-                {
-                    b.HasOne("Common.Entities.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Common.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Common.Entities.ManyToManyEntities.SavedPost", b =>
                 {
                     b.HasOne("Common.Entities.Post", "Post")
@@ -576,6 +524,25 @@ namespace Common.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Common.Entities.ManyToManyEntities.UserInterest", b =>
+                {
+                    b.HasOne("Common.Entities.Interest", "Interest")
+                        .WithMany()
+                        .HasForeignKey("InterestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Common.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interest");
 
                     b.Navigation("User");
                 });

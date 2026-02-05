@@ -160,6 +160,19 @@ namespace API.Controllers.UserSubmissionsControllers
                         }
                     }));
 
+            
+            if(education.UserId != loggedUserId){
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add skill to this education. You are not the owner." }
+                        }
+                    }));
+            }
+
             model.Name = model.Name.Trim().ToUpper();
             SkillServices skillServices = new SkillServices();
             Skill item = new Skill() { Name = model.Name };
@@ -198,7 +211,7 @@ namespace API.Controllers.UserSubmissionsControllers
 
 
         [Authorize]
-        [HttpPost("removeSkill/{educationId}/{skillId}")]
+        [HttpDelete("removeSkill/{educationId}/{skillId}")]
         public IActionResult RemoveSkill([FromRoute] int educationId, [FromRoute] int skillId, [FromRoute] SkillsGetRequest model)
         {
             if (!ModelState.IsValid)
@@ -222,6 +235,18 @@ namespace API.Controllers.UserSubmissionsControllers
                             Messages = new List<string>() { "Education not found" }
                         }
                     }));
+
+            if(education.UserId != loggedUserId){
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add skill to this education. You are not the owner." }
+                        }
+                    }));
+            }
 
             UserSkillServices userSkillServices = new UserSkillServices();
             var userSkill = userSkillServices.GetById(loggedUserId, skillId, Common.Enums.SubmissionType.Education, educationId);

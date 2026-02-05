@@ -78,6 +78,7 @@ public class SkillServices : BaseServices<Skill>
 
     public List<User> GetUsersBySkill(string skillName)
     {
+        skillName = skillName.ToUpper();
         var skill = GetByName(skillName);
         if(skill is null)
             throw new Exception("Skill not found");

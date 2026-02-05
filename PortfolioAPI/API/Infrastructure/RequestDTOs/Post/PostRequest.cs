@@ -11,7 +11,7 @@ public class PostRequest
     public string Location { get; set; } 
     public string Description { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int SavesCount { get; set; }
+    public int SavesCount { get; set; } = 0;
     public PostPrivacyLevel PrivacyLevel { get; set; }
     
 }

@@ -17,9 +17,6 @@ public class User : BaseEntity
     public string Country { get; set; }
     public string Nationality { get; set; }
     public string Details { get; set; }
-
-    //public virtual AuthUser AuthUser { get; set; }
-    //public virtual List<UserSubmissionBaseEntity> UserSubmissions { get; set; }
     
     [JsonIgnore]
     public virtual List<Post> Posts { get; set; }

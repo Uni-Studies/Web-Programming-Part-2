@@ -17,6 +17,7 @@ public class HashtagServices : BaseServices<Hashtag>
         Context.Attach(post);
         return post.Hashtags.Any(t => t.Tag.Equals(tag));
     }
+    
     public void AddTagToPost(string tag, Post post)
     {
         Context.Attach(post);
@@ -37,13 +38,26 @@ public class HashtagServices : BaseServices<Hashtag>
         Context.SaveChanges();
     }
 
-    public List<Post> SearchPostsByHashtag(string hashtag)
+    public List<Post> SearchPostsByHashtag(string hashtag, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)
     {
         var tag = GetByTag(hashtag);
 
-        if(tag is null)
+        if (tag is null)
             throw new Exception("Tag is not found!");
+
         Context.Attach(tag);
-        return tag.Posts; 
+        var query = tag.Posts.AsEnumerable();
+
+        if (!string.IsNullOrEmpty(orderBy))
+        {
+            var property = typeof(Post).GetProperty(orderBy);
+            if (property != null)
+            {
+                query = sortAsc ? query.OrderBy(p => property.GetValue(p))
+                                : query.OrderByDescending(p => property.GetValue(p));
+            }
+        }
+
+        return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
     }
 }

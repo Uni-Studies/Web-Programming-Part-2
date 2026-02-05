@@ -34,15 +34,11 @@ namespace API.Controllers
             item.Country = model.Country;
             item.Nationality = model.Nationality;
             item.Details = model.Details;
-
         }
 
         protected override Expression<Func<User, bool>> GetFilter(UsersGetRequest model)
         {
-            //int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
-            model.Filter ??= new UsersGetFilterRequest();
-
-            
+           
             model.Filter ??= new UsersGetFilterRequest();
 
             return u =>
@@ -110,7 +106,7 @@ namespace API.Controllers
             var user = userServices.GetById(userId);
 
             if(user is null)
-                 return NotFound(
+                return NotFound(
                     ServiceResult<UserRequest>.Failure(
                         null,
                         new List<Error>
@@ -126,6 +122,7 @@ namespace API.Controllers
                         }
                     )
                 );
+
             FullUser fullUser = userServices.GetFullUser(userId);
             return Ok(ServiceResult<FullUser                                                                                                                                                                                                                                                                                                                                                                                                                             >.Success(fullUser));
         }
@@ -170,13 +167,12 @@ namespace API.Controllers
                 
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
           
-            SocialNetwork socialNetwork = new() { Type = model.Type, Account = model.Account, Link = model.Link };
+            SocialNetwork socialNetwork = new() { Type = model.Type.Trim(), Account = model.Account.Trim(), Link = model.Link.Trim()};
            
             socialNetwork.UserId = loggedUserId;
-            /* socialNetwork.User = user; */
 
             SocialNetworkServices socialNetworkServices = new SocialNetworkServices();
-            if (socialNetworkServices.AccountExists(model.Account))
+            if (socialNetworkServices.AccountExists(model.Account.Trim()))
             {
                 return BadRequest(ServiceResult<SocialNetwork>.Failure(null,
                     new List<Error>
@@ -223,29 +219,22 @@ namespace API.Controllers
 
         #region Interests
         [Authorize]
-        [HttpPost("addInterest/{interestId}")]
+        [HttpPost("addInterest")]
         public IActionResult AddInterest([FromBody] InterestRequest model)
         {
-            if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                return BadRequest(ServiceResult<Post>.Failure(null,
-                    new List<Error>
-                    {
-                        new Error
-                        {
-                            Key = "Interest Name",
-                            Messages = new List<string> { "Interest is required" }
-                        }
-                    }));
-            }
-
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+                
             model.Name = model.Name.Trim().ToLower();
             
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            
             UserServices userServices = new UserServices();
             var user = userServices.GetById(loggedUserId);
 
-            if(user == null)
+            if(user == null) // admin does not have a user; validation for admin
             {
                 return BadRequest(ServiceResult<Post>.Failure(null,
                     new List<Error>
@@ -269,7 +258,7 @@ namespace API.Controllers
                         new Error
                         {
                             Key = "Global",
-                            Messages = new List<string> { "Interest already has this hashtag." }
+                            Messages = new List<string> { "User has already added this interest" }
                         }
                     }));
             }
@@ -285,29 +274,21 @@ namespace API.Controllers
         }
         
         [Authorize]
-        [HttpDelete("removeInterest/{interestId}")]
-        public IActionResult RemoveInterest([FromRoute] int interestId, [FromBody] InterestRequest model)
+        [HttpDelete("removeInterest")]
+        public IActionResult RemoveInterest([FromBody] InterestRequest model)
         {
-            if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                return NotFound(ServiceResult<Post>.Failure(null,
-                    new List<Error>
-                    {
-                        new Error
-                        {
-                            Key = "Interest Name",
-                            Messages = new List<string> { "Interest name is required" }
-                        }
-                    }));
-            }
+             if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
 
             model.Name = model.Name.Trim().ToLower();
-            InterestServices interestServices = new InterestServices();
+            InterestServices interestService = new InterestServices();
             
-            var interest = interestServices.GetByName(model.Name);
+            var interest = interestService.GetByName(model.Name);
             if(interest == null)
             {
-                return NotFound(ServiceResult<Post>.Failure(null,
+                return BadRequest(ServiceResult<Interest>.Failure(null,
                     new List<Error>
                     {
                         new Error()
@@ -317,24 +298,25 @@ namespace API.Controllers
                         }
                     }));
             }
-
+            
             int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
             UserServices userServices = new UserServices();
             var user = userServices.GetById(loggedUserId);
-            if(user == null)
+
+            if(user == null) // admin does not have a user; validation for admin
             {
-                return NotFound(ServiceResult<Post>.Failure(null,
+                return BadRequest(ServiceResult<Post>.Failure(null,
                     new List<Error>
                     {
                         new Error()
                         {
                             Key = "Global",
-                            Messages = new List<string>() { "Post not found" }
+                            Messages = new List<string>() { "User not found" }
                         }
                     }));
             }
 
-            if (!interestServices.UserHasInterest(user, interest.Name))
+            if (!interestService.UserHasInterest(user, interest.Name))
             {
                 return BadRequest(ServiceResult<Post>.Failure(null,
                     new List<Error>
@@ -342,32 +324,18 @@ namespace API.Controllers
                         new Error
                         {
                             Key = "Global",
-                            Messages = new List<string> { "Post does not have this hashtag." }
+                            Messages = new List<string> { "User does not have this interest." }
                         }
                     }));
             }
 
-            interestServices.RemoveInterestFromUser(interest.Name, user);
+            interestService.RemoveInterestFromUser(interest.Name, user);
             return Ok(ServiceResult<Interest>.Success(interest));
         }
 
         [HttpGet("getUserInterests/{userId}")]
-        public IActionResult GetUserInterests([FromRoute] int userId, [FromQuery] InterestsGetRequest model)
+        public IActionResult GetUserInterests([FromRoute] int userId)
         {
-
-            model.Pager = model.Pager ?? new PagerRequest();
-            model.Pager.Page = model.Pager.Page <= 0
-                                    ? 1
-                                    : model.Pager.Page;
-            model.Pager.PageSize = model.Pager.PageSize <= 0
-                                        ? 10
-                                        : model.Pager.PageSize;
-
-            model.OrderBy ??= nameof(BaseEntity.Id);
-            model.OrderBy = typeof(Post).GetProperty(model.OrderBy) != null
-                                ? model.OrderBy
-                                : nameof(BaseEntity.Id);
-
             UserServices userServices = new UserServices();
             var user = userServices.GetById(userId);
             if(user == null)
@@ -378,7 +346,7 @@ namespace API.Controllers
                         new Error()
                         {
                             Key = "Global",
-                            Messages = new List<string>() { "Post not found" }
+                            Messages = new List<string>() { "User not found" }
                         }
                     }));
             }
@@ -398,13 +366,6 @@ namespace API.Controllers
             }
 
             var response = new InterestsGetResponse();    
-
-            response.Pager = new PagerResponse();
-            response.Pager.Page = model.Pager.Page;
-            response.Pager.PageSize = model.Pager.PageSize;
-            response.OrderBy = model.OrderBy;
-            response.SortAscending = model.SortAscending;
-            response.Pager.Count = interests.Count;
             response.Items = interests;
 
             return Ok(ServiceResult<InterestsGetResponse>.Success(response));

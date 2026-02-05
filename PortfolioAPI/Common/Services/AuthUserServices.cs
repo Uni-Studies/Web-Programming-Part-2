@@ -36,15 +36,6 @@ public class AuthUserServices : BaseServices<AuthUser>
         authUser.User = new User();
 
         Save(authUser);
-         
-/*         var user = new User
-        {
-            Id = authUser.Id,
-        };
-
-        UserServices userService = new UserServices();
-        userService.Save(user);  */
-
         return authUser;
     }
  

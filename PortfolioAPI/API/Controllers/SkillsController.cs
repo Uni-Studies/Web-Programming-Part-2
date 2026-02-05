@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using API.Infrastructure.RequestDTOs.Shared;
+using API.Infrastructure.RequestDTOs.Skill;
 using API.Infrastructure.RequestDTOs.User;
 using API.Infrastructure.ResponseDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Skill;
@@ -49,14 +50,14 @@ namespace API.Controllers
             }
 
         [HttpGet("getUsersBySkill")]
-        public IActionResult GetUsersBySkill([FromBody] string skill, [FromQuery] UsersGetRequest model)
+        public IActionResult GetUsersBySkill([FromBody] SkillRequest skill, [FromQuery] UsersGetRequest model)
         {
             SkillServices skillServices = new SkillServices();
 
             var users = new List<User>();
             try
             {
-                users = skillServices.GetUsersBySkill(skill);
+                users = skillServices.GetUsersBySkill(skill.Name);
             }
             catch (Exception ex)
             {

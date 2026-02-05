@@ -197,7 +197,7 @@ namespace API.Controllers
             var post = postServices.GetById(postId);
             if(post == null)
             {
-                return BadRequest(ServiceResult<Post>.Failure(null,
+                return NotFound(ServiceResult<Post>.Failure(null,
                     new List<Error>
                     {
                         new Error()
@@ -236,7 +236,7 @@ namespace API.Controllers
             var post = postServices.GetById(postId);
             if(post == null)
             {
-                return BadRequest(ServiceResult<Post>.Failure(null,
+                return NotFound(ServiceResult<Post>.Failure(null,
                     new List<Error>
                     {
                         new Error()
@@ -247,7 +247,17 @@ namespace API.Controllers
                     }));
             }
 
-            postServices.UnsavePost(user, post);
+            try
+            {
+                postServices.UnsavePost(user, post); 
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
             
             return Ok(ServiceResult<Post>.Success(post));
         }
@@ -273,21 +283,25 @@ namespace API.Controllers
             var user = userServices.GetById(loggedUserId);
 
             PostServices service = new PostServices();
-            var savedPosts = service.GetSavedPostsByUser(user);
 
-            Expression<Func<Post, bool>> filter = GetFilter(model);
-
+            var savedPosts = service.GetSavedPostsByUser(
+                user,
+                model.OrderBy,
+                model.SortAscending,
+                model.Pager.Page,
+                model.Pager.PageSize);
+            
             var response = new PostsGetResponse();    
 
             response.Pager = new PagerResponse();
             response.Pager.Page = model.Pager.Page;
             response.Pager.PageSize = model.Pager.PageSize;
+            response.Pager.Count = savedPosts.Count;
             response.OrderBy = model.OrderBy;
             response.SortAscending = model.SortAscending;
 
             PopulateGetResponse(model, response);
 
-            response.Pager.Count = savedPosts.Count;
             response.Items = savedPosts;
 
             return Ok(ServiceResult<PostsGetResponse>.Success(response));
@@ -300,18 +314,10 @@ namespace API.Controllers
         [HttpPost("addHashtag/{postId}")]
         public IActionResult AddHashtag([FromRoute] int postId, [FromBody] HashtagRequest model)
         {
-            if (string.IsNullOrWhiteSpace(model.Tag))
-            {
-                return BadRequest(ServiceResult<Post>.Failure(null,
-                    new List<Error>
-                    {
-                        new Error
-                        {
-                            Key = "Tag",
-                            Messages = new List<string> { "Tag is required" }
-                        }
-                    }));
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
 
             model.Tag = model.Tag.Trim().ToLower();
             
@@ -321,9 +327,22 @@ namespace API.Controllers
             PostServices postService = new PostServices();
             var post = postService.GetById(postId);
 
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            
+            if(post.UserId != loggedUserId){
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add hashtag to this post. You are not the owner." }
+                        }
+                    }));
+            }
             if(post == null)
             {
-                return BadRequest(ServiceResult<Post>.Failure(null,
+                return NotFound(ServiceResult<Post>.Failure(null,
                     new List<Error>
                     {
                         new Error()
@@ -361,26 +380,18 @@ namespace API.Controllers
         [HttpDelete("removeHashtag/{postId}")]
         public IActionResult RemoveHashtag([FromBody] HashtagRequest model, [FromRoute] int postId)
         {
-            if (string.IsNullOrWhiteSpace(model.Tag))
-            {
-                return BadRequest(ServiceResult<Post>.Failure(null,
-                    new List<Error>
-                    {
-                        new Error
-                        {
-                            Key = "Tag",
-                            Messages = new List<string> { "Tag is required" }
-                        }
-                    }));
-            }
-
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            
             model.Tag = model.Tag.Trim().ToLower();
             HashtagServices hashtagService = new HashtagServices();
             
             var hashtag = hashtagService.GetByTag(model.Tag);
             if(hashtag == null)
             {
-                return BadRequest(ServiceResult<Post>.Failure(null,
+                return NotFound(ServiceResult<Post>.Failure(null,
                     new List<Error>
                     {
                         new Error()
@@ -395,13 +406,27 @@ namespace API.Controllers
             var post = postService.GetById(postId);
             if(post == null)
             {
-                return BadRequest(ServiceResult<Post>.Failure(null,
+                return NotFound(ServiceResult<Post>.Failure(null,
                     new List<Error>
                     {
                         new Error()
                         {
                             Key = "Global",
                             Messages = new List<string>() { "Post not found" }
+                        }
+                    }));
+            }
+
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            
+            if(post.UserId != loggedUserId){
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add hashtag to this post. You are not the owner." }
                         }
                     }));
             }
@@ -439,12 +464,18 @@ namespace API.Controllers
                                 ? model.OrderBy
                                 : nameof(BaseEntity.Id);
 
+            model.Filter.Hashtag = model.Filter.Hashtag.Trim().ToLower();
             HashtagServices service = new HashtagServices();
 
             var foundPosts = new List<Post>();
             try
             {
-                foundPosts = service.SearchPostsByHashtag(model.Filter.Hashtag);
+                foundPosts = service.SearchPostsByHashtag(
+                    model.Filter.Hashtag,
+                    model.OrderBy,
+                    model.SortAscending,
+                    model.Pager.Page,
+                    model.Pager.PageSize);
             }
             catch (Exception ex)
             {
@@ -459,12 +490,12 @@ namespace API.Controllers
             response.Pager = new PagerResponse();
             response.Pager.Page = model.Pager.Page;
             response.Pager.PageSize = model.Pager.PageSize;
+            response.Pager.Count = foundPosts.Count;
             response.OrderBy = model.OrderBy;
             response.SortAscending = model.SortAscending;
 
             PopulateGetResponse(model, response);
 
-            response.Pager.Count = foundPosts.Count;
             response.Items = foundPosts;
 
             return Ok(ServiceResult<PostsGetResponse>.Success(response));
@@ -491,6 +522,7 @@ namespace API.Controllers
                         }
                     }));
             }
+
             PostServices postServices = new PostServices();
             var post = postServices.GetById(postId);
             if(post == null)
@@ -502,6 +534,20 @@ namespace API.Controllers
                         {
                             Key = "Global",
                             Messages = new List<string>() { "Post not found" }
+                        }
+                    }));
+            }
+
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+
+            if(post.UserId != loggedUserId){
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add hashtag to this post. You are not the owner." }
                         }
                     }));
             }
@@ -547,6 +593,20 @@ namespace API.Controllers
                     }));
             }
 
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            
+            if(post.UserId != loggedUserId){
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add hashtag to this post. You are not the owner." }
+                        }
+                    }));
+            }
+            
             ImageServices imageServices = new ImageServices();
             var image = imageServices.GetById(imageId);
 

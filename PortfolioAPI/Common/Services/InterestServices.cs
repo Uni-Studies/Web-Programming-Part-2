@@ -13,11 +13,6 @@ public class InterestServices : BaseServices<Interest>
         return Items.FirstOrDefault(x => x.Name.Equals(name));
     }
 
-    public bool InterestExists(string name)
-    {
-        return Items.Any(x => x.Name == name);
-    }
-
     public bool UserHasInterest(User user, string interestName)
     {
         Context.Attach(user);
@@ -25,7 +20,7 @@ public class InterestServices : BaseServices<Interest>
     }
     public void AddInterestToUser(string interestName, User user)
     {
-        Context.Add(user);
+        Context.Attach(user);
 
         var interest = GetByName(interestName);
         user.Interests.Add(interest);
@@ -35,10 +30,10 @@ public class InterestServices : BaseServices<Interest>
 
     public void RemoveInterestFromUser(string interestName, User user)
     {
-        Context.Add(user);
+        Context.Attach(user);
 
         var interest = GetByName(interestName);
-        user.Interests.Add(interest);
+        user.Interests.Remove(interest);
 
         Context.SaveChanges();
     }

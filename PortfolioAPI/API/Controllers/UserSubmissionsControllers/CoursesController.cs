@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using API.Infrastructure.RequestDTOs.Course;
+using API.Infrastructure.RequestDTOs.Skill;
 using API.Infrastructure.RequestDTOs.Shared;
 using API.Infrastructure.ResponseDTOs.Course;
 using API.Infrastructure.ResponseDTOs.Shared;
@@ -12,6 +13,7 @@ using Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Common.Entities.ManyToManyEntities;
 
 namespace API.Controllers.UserSubmissionsControllers
 {
@@ -129,6 +131,127 @@ namespace API.Controllers.UserSubmissionsControllers
             );
 
             return Ok(ServiceResult<CoursesGetResponse>.Success(response));
+        }
+
+        [Authorize]
+        [HttpPost("addSkill/{courseId}")]
+        public IActionResult AddSkill([FromRoute] int courseId, [FromBody] SkillRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            CourseServices courseServices = new CourseServices();
+
+            var course = courseServices.GetById(courseId);
+            if (course is null)
+                return NotFound(ServiceResult<Post>.Failure(null,
+                   new List<Error>
+                   {
+                       new Error()
+                       {
+                           Key = "Global",
+                           Messages = new List<string>() { "Course not found" }
+                       }
+                   }));
+
+            if (course.UserId != loggedUserId)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add skill to this course. You are not the owner." }
+                        }
+                    }));
+            }
+
+            model.Name = model.Name.Trim().ToUpper();
+            SkillServices skillServices = new SkillServices();
+            Skill item = new Skill() { Name = model.Name };
+
+            if (!skillServices.SkillExists(model.Name))
+                skillServices.Save(item);
+
+            var savedSkill = skillServices.GetByName(model.Name);
+            if (savedSkill is null)
+                return NotFound(ServiceResult<Post>.Failure(null,
+                   new List<Error>
+                   {
+                       new Error()
+                       {
+                           Key = "Global",
+                           Messages = new List<string>() { "Skill not found" }
+                       }
+                   }));
+
+            try
+            {
+                var userSkill = skillServices.AddSkillToSubmission(loggedUserId, savedSkill.Id, course, model.Importance);
+                skillServices.MapUserSkillToUserAndSkill(user, savedSkill, userSkill);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Global", ex.Message);
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            }
+
+            return Ok(ServiceResult<Skill>.Success(item));
+        }
+
+        [Authorize]
+        [HttpDelete("removeSkill/{courseId}/{skillId}")]
+        public IActionResult RemoveSkill([FromRoute] int courseId, [FromRoute] int skillId, [FromRoute] SkillsGetRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    ServiceResultExtension<List<Error>>.Failure(null, ModelState)
+                );
+            int loggedUserId = Convert.ToInt32(this.User.FindFirst("loggedUserId").Value);
+            UserServices userServices = new UserServices();
+            var user = userServices.GetById(loggedUserId);
+
+            CourseServices courseServices = new CourseServices();
+
+            var course = courseServices.GetById(courseId);
+            if (course is null)
+                return NotFound(ServiceResult<Post>.Failure(null,
+                   new List<Error>
+                   {
+                       new Error()
+                       {
+                           Key = "Global",
+                           Messages = new List<string>() { "Course not found" }
+                       }
+                   }));
+
+            if (course.UserId != loggedUserId)
+            {
+                return BadRequest(ServiceResult<Post>.Failure(null,
+                    new List<Error>
+                    {
+                        new Error
+                        {
+                            Key = "Global",
+                            Messages = new List<string> { "You cannot add skill to this course. You are not the owner." }
+                        }
+                    }));
+            }
+
+            UserSkillServices userSkillServices = new UserSkillServices();
+            var userSkill = userSkillServices.GetById(loggedUserId, skillId, Common.Enums.SubmissionType.Course, courseId);
+            userSkillServices.Delete(userSkill);
+
+            return Ok(ServiceResult<UserSkill>.Success(userSkill));
         }
     }
 }
