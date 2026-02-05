@@ -14,7 +14,6 @@ public enum StatusEnum
 public enum PostPrivacyLevel
 {
     Public,
-    //FriendsOnly,
     Private
 }
 

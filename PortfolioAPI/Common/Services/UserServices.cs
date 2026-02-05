@@ -14,8 +14,8 @@ public class UserServices : BaseServices<User>
         var user = GetById(id);
         
         AuthUserServices authUserServices = new AuthUserServices();
-        string email = authUserServices.GetUsername(id);
-        string username = authUserServices.GetEmail(id);
+        string email = authUserServices.GetEmail(id);
+        string username = authUserServices.GetUsername(id);
 
         FullUser fullUser = new FullUser
         {
