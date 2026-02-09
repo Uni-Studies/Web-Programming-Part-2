@@ -21,6 +21,11 @@ namespace API.Controllers
     [ApiController]
     public class SkillsController : ControllerBase
     {
+        protected virtual void PopulateGetResponse(UsersGetRequest request, UsersGetResponse response)
+        {
+            request.Filter = response.Filter;
+        }
+
         [HttpGet("viewSkillsImportance")]
         public IActionResult ViewSkillsImportance()
         {
@@ -52,12 +57,29 @@ namespace API.Controllers
         [HttpGet("getUsersBySkill")]
         public IActionResult GetUsersBySkill([FromBody] SkillRequest skill, [FromQuery] UsersGetRequest model)
         {
+            model.Pager = model.Pager ?? new PagerRequest();
+            model.Pager.Page = model.Pager.Page <= 0
+                                    ? 1
+                                    : model.Pager.Page;
+            model.Pager.PageSize = model.Pager.PageSize <= 0
+                                        ? 10
+                                        : model.Pager.PageSize;
+
+            model.OrderBy ??= nameof(BaseEntity.Id);
+            
+            Expression<Func<User, bool>> filter = GetFilter(model);
+            
             SkillServices skillServices = new SkillServices();
 
             var users = new List<User>();
             try
             {
-                users = skillServices.GetUsersBySkill(skill.Name);
+                users = skillServices.GetUsersBySkill(skill.Name, 
+                                                        filter,
+                                                        model.OrderBy,
+                                                        model.SortAscending,
+                                                        model.Pager.Page,
+                                                        model.Pager.PageSize);
             }
             catch (Exception ex)
             {
@@ -66,9 +88,19 @@ namespace API.Controllers
                     ServiceResultExtension<List<Error>>.Failure(null, ModelState)
                 );
             }
-            Expression<Func<User, bool>> filter = GetFilter(model);
+            
 
             var response = new UsersGetResponse();    
+            
+            response.Pager = new PagerResponse();
+            response.Pager.Page = model.Pager.Page;
+            response.Pager.PageSize = model.Pager.PageSize;
+            response.OrderBy = model.OrderBy;
+            response.SortAscending = model.SortAscending;
+
+            PopulateGetResponse(model, response);
+
+            response.Pager.Count = users.Count;
             response.Items = users;
 
             return Ok(ServiceResult<UsersGetResponse>.Success(response));

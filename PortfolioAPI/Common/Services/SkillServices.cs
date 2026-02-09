@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
 using Common.Entities;
 using Common.Entities.ManyToManyEntities;
@@ -76,14 +77,25 @@ public class SkillServices : BaseServices<Skill>
         return skillsImportance.OrderByDescending(x => x.Value).ToDictionary();
     }
 
-    public List<User> GetUsersBySkill(string skillName)
+    public List<User> GetUsersBySkill(string skillName, Expression<Func<User, bool>> filter, string orderBy = null, bool sortAsc = false, int page = 1, int pageSize = int.MaxValue)
     {
         skillName = skillName.ToUpper();
         var skill = GetByName(skillName);
         if(skill is null)
             throw new Exception("Skill not found");
         
-        return skill.UserSkills.Select(x => x.User).ToList();
+        var users = skill.UserSkills.Select(x => x.User).AsEnumerable();
 
+        if (!string.IsNullOrEmpty(orderBy))
+        {
+            var property = typeof(User).GetProperty(orderBy);
+            if (property != null)
+            {
+                users = sortAsc ? users.OrderBy(p => property.GetValue(p)) 
+                                : users.OrderByDescending(p => property.GetValue(p));
+            }
+        }
+        
+        return users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
     } 
 }
